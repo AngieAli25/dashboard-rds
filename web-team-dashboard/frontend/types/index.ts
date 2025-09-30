@@ -12,7 +12,7 @@ export interface Client {
   nome_attivita: string;
   account_riferimento: string;
   tipologia_cliente: 'AAA' | 'A' | 'B';
-  servizio: 'sito_vetrina' | 'sito_strutturato' | 'ecommerce' | 'landing_page' | 'blog' | 'mantenimento';
+  servizio: 'sito_vetrina' | 'sito_strutturato' | 'ecommerce' | 'landing_page' | 'app_webapp' | 'blog' | 'mantenimento';
   servizio_display: string;
   data_richiesta: string;
   operatore: number | null;
@@ -88,20 +88,23 @@ export const SERVIZIO_CHOICES = [
   { value: 'sito_strutturato', label: 'Sito Strutturato' },
   { value: 'ecommerce', label: 'E-commerce' },
   { value: 'landing_page', label: 'Landing Page' },
+  { value: 'app_webapp', label: 'App/Webapp' },
   { value: 'blog', label: 'Blog' },
   { value: 'mantenimento', label: 'Mantenimento' },
 ];
 
 export const FASE_PROCESSO_CHOICES = [
-  { value: 'prima_call', label: 'Prima Call' },
+  { value: 'prima_call', label: 'Prima call' },
   { value: 'implementazione', label: 'Implementazione' },
+  { value: 'in_revisione', label: 'In revisione' },
   { value: 'presentazione', label: 'Presentazione' },
-  { value: 'da_mettere_online', label: 'Da Mettere Online' },
+  { value: 'da_mettere_online', label: 'Da mettere online' },
   { value: 'online', label: 'Online' },
-  { value: 'gestione_mantenimento', label: 'Gestione/Mantenimento' },
+  { value: 'gestione', label: 'Gestione' },
+  { value: 'mantenimento', label: 'Mantenimento' },
   { value: 'stand_by', label: 'Stand-by' },
   { value: 'insoluto', label: 'Insoluto' },
-  { value: 'da_fare', label: 'Da Fare' },
+  { value: 'da_fare', label: 'Da fare' },
 ];
 
 export const SEO_STATO_CHOICES = [

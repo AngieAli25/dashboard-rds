@@ -8,7 +8,7 @@ import { ClientFilters } from '@/components/clients/ClientFilters';
 import { AddClientModal } from '@/components/clients/AddClientModal';
 import { EditableCell } from '@/components/clients/EditableCell';
 import { KPICard } from '@/components/dashboard/KPICard';
-import { TIPOLOGIA_CLIENTE_CHOICES, SERVIZIO_CHOICES, FASE_PROCESSO_CHOICES } from '@/types';
+import { TIPOLOGIA_CLIENTE_CHOICES, SERVIZIO_CHOICES, FASE_PROCESSO_CHOICES, SEO_STATO_CHOICES } from '@/types';
 import toast from 'react-hot-toast';
 
 export default function ClientiPage() {
@@ -191,33 +191,46 @@ export default function ClientiPage() {
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                  Data di richiesta
+                </th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Cliente
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Tipologia
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Servizio
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Operatore
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Servizio
+                </th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Fase del processo
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  SEO
+                </th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Scadenza
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Stato
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Note
                 </th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {filteredClients.map((client) => (
                 <tr key={client.id} className="hover:bg-gray-50">
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  <td className="px-4 py-4 whitespace-nowrap">
+                    <EditableCell
+                      value={client.data_richiesta}
+                      type="date"
+                      onSave={(value) => handleFieldUpdate(client.id, 'data_richiesta', value)}
+                    />
+                  </td>
+                  <td className="px-4 py-4 whitespace-nowrap">
                     <div className="space-y-1">
                       <EditableCell
                         value={client.nome_attivita}
@@ -235,7 +248,7 @@ export default function ClientiPage() {
                       />
                     </div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  <td className="px-4 py-4 whitespace-nowrap">
                     <EditableCell
                       value={client.tipologia_cliente}
                       type="badge"
@@ -243,15 +256,7 @@ export default function ClientiPage() {
                       onSave={(value) => handleFieldUpdate(client.id, 'tipologia_cliente', value)}
                     />
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <EditableCell
-                      value={client.servizio}
-                      type="select"
-                      options={SERVIZIO_CHOICES}
-                      onSave={(value) => handleFieldUpdate(client.id, 'servizio', value)}
-                    />
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  <td className="px-4 py-4 whitespace-nowrap">
                     <EditableCell
                       value={client.operatore?.toString() || ''}
                       type="select"
@@ -260,7 +265,15 @@ export default function ClientiPage() {
                       displayValue={client.operatore_detail?.name || 'Non assegnato'}
                     />
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  <td className="px-4 py-4 whitespace-nowrap">
+                    <EditableCell
+                      value={client.servizio}
+                      type="select"
+                      options={SERVIZIO_CHOICES}
+                      onSave={(value) => handleFieldUpdate(client.id, 'servizio', value)}
+                    />
+                  </td>
+                  <td className="px-4 py-4 whitespace-nowrap">
                     <EditableCell
                       value={client.fase_processo}
                       type="select"
@@ -268,22 +281,29 @@ export default function ClientiPage() {
                       onSave={(value) => handleFieldUpdate(client.id, 'fase_processo', value)}
                     />
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  <td className="px-4 py-4 whitespace-nowrap">
+                    <EditableCell
+                      value={client.seo_stato}
+                      type="select"
+                      options={SEO_STATO_CHOICES}
+                      onSave={(value) => handleFieldUpdate(client.id, 'seo_stato', value)}
+                    />
+                  </td>
+                  <td className="px-4 py-4 whitespace-nowrap">
                     <EditableCell
                       value={client.scadenza}
                       type="date"
                       onSave={(value) => handleFieldUpdate(client.id, 'scadenza', value)}
                     />
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                      client.is_standby ? 'bg-yellow-100 text-yellow-800' :
-                      client.is_maintenance ? 'bg-green-100 text-green-800' :
-                      'bg-blue-100 text-blue-800'
-                    }`}>
-                      {client.is_standby ? 'Stand-by' : 
-                       client.is_maintenance ? 'Mantenimento' : 'Attivo'}
-                    </span>
+                  <td className="px-4 py-4 whitespace-nowrap">
+                    <EditableCell
+                      value={client.note}
+                      type="text"
+                      onSave={(value) => handleFieldUpdate(client.id, 'note', value)}
+                      className="max-w-xs truncate"
+                      placeholder="Aggiungi note..."
+                    />
                   </td>
                 </tr>
               ))}

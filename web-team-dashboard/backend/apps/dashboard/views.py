@@ -6,17 +6,19 @@ from apps.clients.models import Client, TeamMember
 
 @api_view(['GET'])
 def dashboard_stats(request):
-    # Usa la stessa logica del modello per is_active
+    # Clienti in stand-by
+    standby_clients = Client.objects.filter(fase_processo='stand_by').count()
+    
+    # Clienti in mantenimento (servizio mantenimento o fase mantenimento, NON gestione)
+    maintenance_clients = Client.objects.filter(
+        Q(servizio='mantenimento') | Q(fase_processo='mantenimento')
+    ).count()
+    
+    # Clienti attivi: tutti meno quelli in stand-by, insoluti, online e in mantenimento (ma gestione è attivo)
     active_clients = Client.objects.exclude(
         fase_processo__in=['stand_by', 'insoluto', 'online']
     ).exclude(
-        Q(servizio='mantenimento') | Q(fase_processo='gestione_mantenimento')
-    ).count()
-    
-    standby_clients = Client.objects.filter(fase_processo='stand_by').count()
-    
-    maintenance_clients = Client.objects.filter(
-        Q(servizio='mantenimento') | Q(fase_processo='gestione_mantenimento')
+        Q(servizio='mantenimento') | Q(fase_processo='mantenimento')
     ).count()
     
     return Response({
@@ -34,11 +36,11 @@ def team_workload(request):
     
     for member in team_members:
         clients = Client.objects.filter(operatore=member)
-        # Usa la stessa logica del modello per is_active
+        # Usa la stessa logica aggiornata per is_active (gestione è attivo)
         active_clients = clients.exclude(
             fase_processo__in=['stand_by', 'insoluto', 'online']
         ).exclude(
-            Q(servizio='mantenimento') | Q(fase_processo='gestione_mantenimento')
+            Q(servizio='mantenimento') | Q(fase_processo='mantenimento')
         )
         
         # Raggruppa clienti per tipologia di lavorazione

@@ -1,21 +1,40 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { TrendingUp, Calendar, Users, Briefcase, BarChart3, LineChart, PieChart } from 'lucide-react';
+import { TrendingUp, Calendar, Users, Briefcase, BarChart3, LineChart, PieChart, ChevronLeft, ChevronRight } from 'lucide-react';
 import { KPICard } from '@/components/dashboard/KPICard';
-import { ProjectHistory, MonthlySnapshot } from '@/types';
+import { ProjectHistory, MonthlySnapshot, Client, TeamMember } from '@/types';
+import { clientsApi, teamApi } from '@/lib/api';
 import toast from 'react-hot-toast';
 
 export default function StoricoPage() {
   const [projectHistory, setProjectHistory] = useState<ProjectHistory[]>([]);
   const [snapshots, setSnapshots] = useState<MonthlySnapshot[]>([]);
+  const [clients, setClients] = useState<Client[]>([]);
+  const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
   const [loading, setLoading] = useState(true);
+  
+  // Stati per la visualizzazione espansa
+  const [snapshotsExpanded, setSnapshotsExpanded] = useState(false);
+  const [projectsExpanded, setProjectsExpanded] = useState(false);
+  const [snapshotsPage, setSnapshotsPage] = useState(0);
+  const [projectsPage, setProjectsPage] = useState(0);
+  const itemsPerPage = 10;
+  const initialItemsCount = 3;
 
   useEffect(() => {
-    // Simulazione dati per ora, da sostituire con chiamate API reali
     const fetchData = async () => {
       try {
         setLoading(true);
+        
+        // Fetch real clients and team data
+        const [clientsData, membersData] = await Promise.all([
+          clientsApi.getAll(),
+          teamApi.getAll(),
+        ]);
+        
+        setClients(clientsData.results);
+        setTeamMembers(membersData);
         
         // Dati simulati per lo storico progetti
         const simulatedHistory: ProjectHistory[] = [
@@ -57,39 +76,66 @@ export default function StoricoPage() {
           }
         ];
 
-        // Dati simulati per gli snapshot mensili
-        const simulatedSnapshots: MonthlySnapshot[] = [
-          {
-            id: 1,
-            month: 9,
-            year: 2025,
-            active_clients: 5,
-            standby_clients: 2,
-            maintenance_clients: 3,
-            total_clients: 10,
-            created_at: "2025-09-01T00:00:00Z"
-          },
-          {
-            id: 2,
-            month: 8,
-            year: 2025,
-            active_clients: 7,
-            standby_clients: 1,
-            maintenance_clients: 2,
-            total_clients: 10,
-            created_at: "2025-08-01T00:00:00Z"
-          },
-          {
-            id: 3,
-            month: 7,
-            year: 2025,
-            active_clients: 6,
-            standby_clients: 3,
-            maintenance_clients: 1,
-            total_clients: 10,
-            created_at: "2025-07-01T00:00:00Z"
-          }
+        // Calcola dati reali per il mese corrente
+        const currentDate = new Date();
+        const realActiveClients = clientsData.results.filter(client => 
+          client.fase_processo !== 'stand_by' && 
+          client.fase_processo !== 'insoluto' && 
+          client.fase_processo !== 'online' &&
+          client.servizio !== 'mantenimento' && 
+          client.fase_processo !== 'mantenimento'
+        ).length;
+        const realStandbyClients = clientsData.results.filter(client => client.fase_processo === 'stand_by').length;
+        const realMaintenanceClients = clientsData.results.filter(client => 
+          client.servizio === 'mantenimento' || client.fase_processo === 'mantenimento'
+        ).length;
+        
+        // Snapshot con dati reali per il mese corrente + dati simulati per mesi precedenti
+        const simulatedSnapshots: MonthlySnapshot[] = [];
+        const baseData = [
+          { active: 8, standby: 2, maintenance: 5 },
+          { active: 7, standby: 3, maintenance: 4 },
+          { active: 9, standby: 1, maintenance: 6 },
+          { active: 6, standby: 4, maintenance: 3 },
+          { active: 10, standby: 2, maintenance: 7 },
+          { active: 5, standby: 3, maintenance: 4 },
+          { active: 8, standby: 1, maintenance: 5 },
+          { active: 7, standby: 2, maintenance: 6 },
         ];
+        
+        for (let i = 0; i < 25; i++) {
+          const date = new Date();
+          date.setMonth(date.getMonth() - i);
+          
+          if (i === 0) {
+            // Mese corrente: usa dati reali
+            simulatedSnapshots.push({
+              id: 1,
+              month: currentDate.getMonth() + 1,
+              year: currentDate.getFullYear(),
+              active_clients: realActiveClients,
+              standby_clients: realStandbyClients,
+              maintenance_clients: realMaintenanceClients,
+              total_clients: realActiveClients + realStandbyClients + realMaintenanceClients,
+              created_at: `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}-01T00:00:00Z`
+            });
+          } else {
+            // Mesi precedenti: usa dati simulati
+            const dataIndex = i % baseData.length;
+            const data = baseData[dataIndex];
+            
+            simulatedSnapshots.push({
+              id: i + 1,
+              month: date.getMonth() + 1,
+              year: date.getFullYear(),
+              active_clients: data.active,
+              standby_clients: data.standby,
+              maintenance_clients: data.maintenance,
+              total_clients: data.active + data.standby + data.maintenance,
+              created_at: `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-01T00:00:00Z`
+            });
+          }
+        }
 
         await new Promise(resolve => setTimeout(resolve, 1000)); // Simula loading
         
@@ -126,33 +172,96 @@ export default function StoricoPage() {
   }
 
   // Calcoli per le metriche
-  const totalProjects = projectHistory.length;
-  const avgDuration = Math.round(
-    projectHistory.reduce((acc, project) => acc + project.duration_days, 0) / totalProjects
-  );
   const currentMonth = snapshots[0];
-  const previousMonth = snapshots[1];
-  const growthRate = previousMonth 
-    ? Math.round(((currentMonth.total_clients - previousMonth.total_clients) / previousMonth.total_clients) * 100)
-    : 0;
+  const currentDate = new Date();
+  const currentMonthNumber = currentDate.getMonth() + 1; // getMonth() restituisce 0-11
+  const currentYear = currentDate.getFullYear();
+  
+  // Progetti completati nel mese corrente (fase "online")
+  const onlineClients = clients.filter(client => client.fase_processo === 'online');
+  const projectsCompletedThisMonth = onlineClients.filter(client => {
+    const updatedDate = new Date(client.updated_at);
+    return updatedDate.getMonth() + 1 === currentMonthNumber && 
+           updatedDate.getFullYear() === currentYear;
+  });
+  
+  const totalProjectsThisMonth = projectsCompletedThisMonth.length;
+  
+  // Calcolo durata media reale: da data_richiesta a quando passano online
+  const avgDuration = totalProjectsThisMonth > 0 ? Math.round(
+    projectsCompletedThisMonth.reduce((acc, client) => {
+      const startDate = new Date(client.data_richiesta);
+      const endDate = new Date(client.updated_at);
+      const durationDays = Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24));
+      return acc + durationDays;
+    }, 0) / totalProjectsThisMonth
+  ) : 0;
+  
+  // Calcolo media progetti per persona nel mese corrente (dati reali)
+  const teamSize = 4; // Federica, Marta, Edoardo, Virginia
+  const realActiveClientsCount = clients.filter(client => 
+    client.fase_processo !== 'stand_by' && 
+    client.fase_processo !== 'insoluto' && 
+    client.fase_processo !== 'online' &&
+    client.servizio !== 'mantenimento' && 
+    client.fase_processo !== 'mantenimento'
+  ).length;
+  const avgProjectsPerPerson = Math.round((realActiveClientsCount / teamSize) * 10) / 10;
+
+  // Visualizzazione snapshots
+  const displayedSnapshots = snapshotsExpanded 
+    ? snapshots.slice(snapshotsPage * itemsPerPage, (snapshotsPage + 1) * itemsPerPage)
+    : snapshots.slice(0, initialItemsCount);
+  const totalSnapshotsPages = Math.ceil(snapshots.length / itemsPerPage);
+
+  // Progetti completati reali (clienti con fase "online")
+  const completedProjects = onlineClients.map(client => ({
+    id: client.id,
+    client_name: client.nome_attivita,
+    team_member_name: client.operatore_detail?.name || 'Non assegnato',
+    service: client.servizio,
+    service_display: client.servizio_display || client.servizio,
+    start_date: client.data_richiesta,
+    completion_date: client.updated_at,
+    duration_days: Math.ceil((new Date(client.updated_at).getTime() - new Date(client.data_richiesta).getTime()) / (1000 * 60 * 60 * 24)),
+    notes: client.note || '',
+    created_at: client.updated_at
+  })).sort((a, b) => new Date(b.completion_date).getTime() - new Date(a.completion_date).getTime());
+
+  // Visualizzazione progetti
+  const displayedProjects = projectsExpanded 
+    ? completedProjects.slice(projectsPage * itemsPerPage, (projectsPage + 1) * itemsPerPage)
+    : completedProjects.slice(0, initialItemsCount);
+  const totalProjectsPages = Math.ceil(completedProjects.length / itemsPerPage);
+
+  // Funzioni per gestire espansione
+  const handleSnapshotsExpand = () => {
+    setSnapshotsExpanded(true);
+    setSnapshotsPage(0);
+  };
+
+  const handleSnapshotsCollapse = () => {
+    setSnapshotsExpanded(false);
+    setSnapshotsPage(0);
+  };
+
+  const handleProjectsExpand = () => {
+    setProjectsExpanded(true);
+    setProjectsPage(0);
+  };
+
+  const handleProjectsCollapse = () => {
+    setProjectsExpanded(false);
+    setProjectsPage(0);
+  };
 
   return (
     <div className="space-y-8">
-      {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">
-          Storico e Analisi
-        </h1>
-        <p className="text-gray-600">
-          Panoramica delle performance del team e andamento dei progetti
-        </p>
-      </div>
-
       {/* Metriche Principali */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         <KPICard
           title="Progetti Completati"
-          value={totalProjects}
+          value={totalProjectsThisMonth}
           icon={Briefcase}
           color="blue"
         />
@@ -163,14 +272,14 @@ export default function StoricoPage() {
           color="green"
         />
         <KPICard
-          title="Crescita Mensile"
-          value={`${growthRate}%`}
-          icon={TrendingUp}
-          color={growthRate > 0 ? "green" : "red"}
+          title="Media Progetti/Persona"
+          value={avgProjectsPerPerson}
+          icon={BarChart3}
+          color="orange"
         />
         <KPICard
           title="Clienti Totali"
-          value={currentMonth?.total_clients || 0}
+          value={clients.length}
           icon={Users}
           color="purple"
         />
@@ -197,7 +306,7 @@ export default function StoricoPage() {
               </tr>
             </thead>
             <tbody>
-              {snapshots.map((snapshot) => (
+              {displayedSnapshots.map((snapshot) => (
                 <tr key={snapshot.id} className="border-b border-gray-100 hover:bg-gray-50">
                   <td className="py-3 px-4 text-gray-900">
                     {new Date(snapshot.year, snapshot.month - 1).toLocaleDateString('it-IT', { 
@@ -228,6 +337,56 @@ export default function StoricoPage() {
             </tbody>
           </table>
         </div>
+        
+        {/* Controlli visualizzazione snapshots */}
+        <div className="mt-4">
+          {!snapshotsExpanded ? (
+            // Mostra "Mostra altro" se ci sono più di 3 elementi
+            snapshots.length > initialItemsCount && (
+              <button
+                onClick={handleSnapshotsExpand}
+                className="w-full py-2 text-sm text-primary-600 hover:text-primary-700 border border-primary-200 rounded-md hover:bg-primary-50 transition-colors"
+              >
+                Mostra altro ({snapshots.length - initialItemsCount} altri)
+              </button>
+            )
+          ) : (
+            // Controlli quando espanso
+            <div className="space-y-3">
+              {/* Controlli paginazione */}
+              {totalSnapshotsPages > 1 && (
+                <div className="flex items-center justify-between">
+                  <div className="text-sm text-gray-500">
+                    Pagina {snapshotsPage + 1} di {totalSnapshotsPages} ({snapshots.length} totali)
+                  </div>
+                  <div className="flex space-x-2">
+                    <button
+                      onClick={() => setSnapshotsPage(prev => Math.max(0, prev - 1))}
+                      disabled={snapshotsPage === 0}
+                      className="px-3 py-1 text-sm border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      <ChevronLeft className="h-4 w-4" />
+                    </button>
+                    <button
+                      onClick={() => setSnapshotsPage(prev => Math.min(totalSnapshotsPages - 1, prev + 1))}
+                      disabled={snapshotsPage === totalSnapshotsPages - 1}
+                      className="px-3 py-1 text-sm border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      <ChevronRight className="h-4 w-4" />
+                    </button>
+                  </div>
+                </div>
+              )}
+              {/* Pulsante Mostra meno */}
+              <button
+                onClick={handleSnapshotsCollapse}
+                className="w-full py-2 text-sm text-gray-600 hover:text-gray-700 border border-gray-200 rounded-md hover:bg-gray-50 transition-colors"
+              >
+                Mostra meno
+              </button>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Progetti Completati */}
@@ -251,7 +410,7 @@ export default function StoricoPage() {
               </tr>
             </thead>
             <tbody>
-              {projectHistory.map((project) => (
+              {displayedProjects.map((project) => (
                 <tr key={project.id} className="border-b border-gray-100 hover:bg-gray-50">
                   <td className="py-3 px-4 font-medium text-gray-900">
                     {project.client_name}
@@ -276,14 +435,64 @@ export default function StoricoPage() {
           </table>
         </div>
         
-        {projectHistory.length === 0 && (
+        {/* Controlli visualizzazione progetti */}
+        <div className="mt-4">
+          {!projectsExpanded ? (
+            // Mostra "Mostra altro" se ci sono più di 3 elementi
+            completedProjects.length > initialItemsCount && (
+              <button
+                onClick={handleProjectsExpand}
+                className="w-full py-2 text-sm text-primary-600 hover:text-primary-700 border border-primary-200 rounded-md hover:bg-primary-50 transition-colors"
+              >
+                Mostra altro ({completedProjects.length - initialItemsCount} altri)
+              </button>
+            )
+          ) : (
+            // Controlli quando espanso
+            <div className="space-y-3">
+              {/* Controlli paginazione */}
+              {totalProjectsPages > 1 && (
+                <div className="flex items-center justify-between">
+                  <div className="text-sm text-gray-500">
+                    Pagina {projectsPage + 1} di {totalProjectsPages} ({completedProjects.length} totali)
+                  </div>
+                  <div className="flex space-x-2">
+                    <button
+                      onClick={() => setProjectsPage(prev => Math.max(0, prev - 1))}
+                      disabled={projectsPage === 0}
+                      className="px-3 py-1 text-sm border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      <ChevronLeft className="h-4 w-4" />
+                    </button>
+                    <button
+                      onClick={() => setProjectsPage(prev => Math.min(totalProjectsPages - 1, prev + 1))}
+                      disabled={projectsPage === totalProjectsPages - 1}
+                      className="px-3 py-1 text-sm border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      <ChevronRight className="h-4 w-4" />
+                    </button>
+                  </div>
+                </div>
+              )}
+              {/* Pulsante Mostra meno */}
+              <button
+                onClick={handleProjectsCollapse}
+                className="w-full py-2 text-sm text-gray-600 hover:text-gray-700 border border-gray-200 rounded-md hover:bg-gray-50 transition-colors"
+              >
+                Mostra meno
+              </button>
+            </div>
+          )}
+        </div>
+        
+        {completedProjects.length === 0 && (
           <div className="text-center py-12">
             <PieChart className="h-12 w-12 text-gray-400 mx-auto mb-4" />
             <h3 className="text-lg font-medium text-gray-900 mb-2">
               Nessun progetto completato
             </h3>
             <p className="text-gray-500">
-              I progetti completati appariranno qui una volta finalizzati.
+              I progetti completati appariranno qui una volta messi online.
             </p>
           </div>
         )}
@@ -298,27 +507,24 @@ export default function StoricoPage() {
           </h2>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="text-center p-4 border border-gray-200 rounded-lg">
-            <div className="text-2xl font-bold text-blue-600 mb-2">
-              {projectHistory.filter(p => p.team_member_name === 'Federica').length}
-            </div>
-            <div className="text-sm text-gray-600">Progetti Federica</div>
-          </div>
-          
-          <div className="text-center p-4 border border-gray-200 rounded-lg">
-            <div className="text-2xl font-bold text-green-600 mb-2">
-              {projectHistory.filter(p => p.team_member_name === 'Marta').length}
-            </div>
-            <div className="text-sm text-gray-600">Progetti Marta</div>
-          </div>
-          
-          <div className="text-center p-4 border border-gray-200 rounded-lg">
-            <div className="text-2xl font-bold text-purple-600 mb-2">
-              {projectHistory.filter(p => p.team_member_name === 'Edoardo').length}
-            </div>
-            <div className="text-sm text-gray-600">Progetti Edoardo</div>
-          </div>
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+          {teamMembers.map((member, index) => {
+            const memberCompletedProjects = projectsCompletedThisMonth.filter(
+              client => client.operatore === member.id
+            ).length;
+            
+            const colors = ['text-blue-600', 'text-green-600', 'text-purple-600', 'text-orange-600'];
+            const colorClass = colors[index % colors.length];
+            
+            return (
+              <div key={member.id} className="text-center p-4 border border-gray-200 rounded-lg">
+                <div className={`text-2xl font-bold ${colorClass} mb-2`}>
+                  {memberCompletedProjects}
+                </div>
+                <div className="text-sm text-gray-600">Progetti {member.name}</div>
+              </div>
+            );
+          })}
         </div>
       </div>
     </div>

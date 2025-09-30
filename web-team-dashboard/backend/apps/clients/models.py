@@ -35,20 +35,23 @@ class Client(models.Model):
         ('sito_strutturato', 'Sito Strutturato'),
         ('ecommerce', 'E-commerce'),
         ('landing_page', 'Landing Page'),
+        ('app_webapp', 'App/Webapp'),
         ('blog', 'Blog'),
         ('mantenimento', 'Mantenimento'),
     ]
     
     FASE_PROCESSO_CHOICES = [
-        ('prima_call', 'Prima Call'),
+        ('prima_call', 'Prima call'),
         ('implementazione', 'Implementazione'),
+        ('in_revisione', 'In revisione'),
         ('presentazione', 'Presentazione'),
-        ('da_mettere_online', 'Da Mettere Online'),
+        ('da_mettere_online', 'Da mettere online'),
         ('online', 'Online'),
-        ('gestione_mantenimento', 'Gestione/Mantenimento'),
+        ('gestione', 'Gestione'),
+        ('mantenimento', 'Mantenimento'),
         ('stand_by', 'Stand-by'),
         ('insoluto', 'Insoluto'),
-        ('da_fare', 'Da Fare'),
+        ('da_fare', 'Da fare'),
     ]
     
     SEO_STATO_CHOICES = [
@@ -89,7 +92,7 @@ class Client(models.Model):
     
     @property
     def is_maintenance(self):
-        return self.servizio == 'mantenimento' or self.fase_processo == 'gestione_mantenimento'
+        return self.servizio == 'mantenimento' or self.fase_processo == 'mantenimento'
     
     @property
     def is_standby(self):

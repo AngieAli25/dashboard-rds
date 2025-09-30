@@ -7,7 +7,7 @@ interface KPICardProps {
   title: string;
   value: number | string;
   icon: LucideIcon;
-  color?: 'blue' | 'green' | 'yellow' | 'red';
+  color?: 'blue' | 'green' | 'yellow' | 'red' | 'orange' | 'purple';
   trend?: {
     value: number;
     isPositive: boolean;
@@ -20,6 +20,8 @@ export function KPICard({ title, value, icon: Icon, color = 'blue', trend }: KPI
     green: 'bg-green-50 text-green-700 border-green-200',
     yellow: 'bg-yellow-50 text-yellow-700 border-yellow-200',
     red: 'bg-red-50 text-red-700 border-red-200',
+    orange: 'bg-orange-50 text-orange-700 border-orange-200',
+    purple: 'bg-purple-50 text-purple-700 border-purple-200',
   };
 
   const iconColorClasses = {
@@ -27,6 +29,8 @@ export function KPICard({ title, value, icon: Icon, color = 'blue', trend }: KPI
     green: 'text-green-600',
     yellow: 'text-yellow-600',
     red: 'text-red-600',
+    orange: 'text-orange-600',
+    purple: 'text-purple-600',
   };
 
   return (
