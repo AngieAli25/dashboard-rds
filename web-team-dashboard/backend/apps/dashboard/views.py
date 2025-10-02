@@ -55,6 +55,9 @@ def team_workload(request):
                 'scadenza': client.scadenza
             })
         
+        # Ordina i servizi in ordine alfabetico
+        client_types = dict(sorted(client_types.items()))
+        
         workload_data.append({
             'id': member.id,
             'name': member.name,

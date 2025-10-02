@@ -36,45 +36,7 @@ export default function StoricoPage() {
         setClients(clientsData.results);
         setTeamMembers(membersData);
         
-        // Dati simulati per lo storico progetti
-        const simulatedHistory: ProjectHistory[] = [
-          {
-            id: 1,
-            client_name: "Ristorante Da Marco",
-            team_member_name: "Federica",
-            service: "sito_vetrina",
-            service_display: "Sito Vetrina",
-            start_date: "2025-08-15",
-            completion_date: "2025-09-10",
-            duration_days: 26,
-            notes: "Progetto completato con successo",
-            created_at: "2025-09-10T10:00:00Z"
-          },
-          {
-            id: 2,
-            client_name: "Studio Dentistico Smile",
-            team_member_name: "Marta",
-            service: "landing_page",
-            service_display: "Landing Page",
-            start_date: "2025-08-20",
-            completion_date: "2025-09-05",
-            duration_days: 16,
-            notes: "Cliente molto soddisfatto",
-            created_at: "2025-09-05T14:30:00Z"
-          },
-          {
-            id: 3,
-            client_name: "Negozio Abbigliamento Fashion",
-            team_member_name: "Edoardo",
-            service: "ecommerce",
-            service_display: "E-commerce",
-            start_date: "2025-07-01",
-            completion_date: "2025-08-30",
-            duration_days: 60,
-            notes: "Progetto complesso con integrazione pagamenti",
-            created_at: "2025-08-30T16:45:00Z"
-          }
-        ];
+        // Nessun dato simulato - usiamo solo progetti reali
 
         // Calcola dati reali per il mese corrente
         const currentDate = new Date();
@@ -90,56 +52,26 @@ export default function StoricoPage() {
           client.servizio === 'mantenimento' || client.fase_processo === 'mantenimento'
         ).length;
         
-        // Snapshot con dati reali per il mese corrente + dati simulati per mesi precedenti
+        // Snapshot con solo dati reali dal mese corrente in poi (ottobre 2025+)
         const simulatedSnapshots: MonthlySnapshot[] = [];
-        const baseData = [
-          { active: 8, standby: 2, maintenance: 5 },
-          { active: 7, standby: 3, maintenance: 4 },
-          { active: 9, standby: 1, maintenance: 6 },
-          { active: 6, standby: 4, maintenance: 3 },
-          { active: 10, standby: 2, maintenance: 7 },
-          { active: 5, standby: 3, maintenance: 4 },
-          { active: 8, standby: 1, maintenance: 5 },
-          { active: 7, standby: 2, maintenance: 6 },
-        ];
         
-        for (let i = 0; i < 25; i++) {
-          const date = new Date();
-          date.setMonth(date.getMonth() - i);
-          
-          if (i === 0) {
-            // Mese corrente: usa dati reali
-            simulatedSnapshots.push({
-              id: 1,
-              month: currentDate.getMonth() + 1,
-              year: currentDate.getFullYear(),
-              active_clients: realActiveClients,
-              standby_clients: realStandbyClients,
-              maintenance_clients: realMaintenanceClients,
-              total_clients: realActiveClients + realStandbyClients + realMaintenanceClients,
-              created_at: `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}-01T00:00:00Z`
-            });
-          } else {
-            // Mesi precedenti: usa dati simulati
-            const dataIndex = i % baseData.length;
-            const data = baseData[dataIndex];
-            
-            simulatedSnapshots.push({
-              id: i + 1,
-              month: date.getMonth() + 1,
-              year: date.getFullYear(),
-              active_clients: data.active,
-              standby_clients: data.standby,
-              maintenance_clients: data.maintenance,
-              total_clients: data.active + data.standby + data.maintenance,
-              created_at: `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-01T00:00:00Z`
-            });
-          }
+        // Solo mese corrente se siamo in ottobre 2025 o dopo
+        if (currentDate.getFullYear() >= 2025 && currentDate.getMonth() >= 9) { // Ottobre = mese 9 (0-based)
+          simulatedSnapshots.push({
+            id: 1,
+            month: currentDate.getMonth() + 1,
+            year: currentDate.getFullYear(),
+            active_clients: realActiveClients,
+            standby_clients: realStandbyClients,
+            maintenance_clients: realMaintenanceClients,
+            total_clients: realActiveClients + realStandbyClients + realMaintenanceClients,
+            created_at: `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}-01T00:00:00Z`
+          });
         }
 
         await new Promise(resolve => setTimeout(resolve, 1000)); // Simula loading
         
-        setProjectHistory(simulatedHistory);
+        setProjectHistory([]);
         setSnapshots(simulatedSnapshots);
       } catch (error) {
         console.error('Error fetching historical data:', error);

@@ -40,7 +40,15 @@ CSV_DATA = """Data di richiesta,Cliente,Account,Tipologia,Operatore,Servizio,Fas
 17/02,Lucchetti Marmi,Colombo F.,AAA,Marta,Sito strutturato,In revisione,Analisi,07/10,
 18/07,Fiscal Focus,Longoni,AAA,Marta,Landing page,Presentazione,,02/10,
 09/09,Acqua Doctor snc,Del Foro,AAA,Marta,Landing page,Prima call,,12/10,
-10/09,Acqua Doctor snc,Del Foro,AAA,Marta,Sito strutturato,Prima call,,12/10,"""
+10/09,Acqua Doctor snc,Del Foro,AAA,Marta,Sito strutturato,Prima call,,12/10,
+23/09,Centro Risarcimento Salute,Carnelli,B,Marta,Sito vetrina,Presentazione,,10/10,Sito fatto con AI (la home Micol il resto Marta)
+16/10,Tr compositi,Marta,A,Marta,Sito strutturato,In revisione,Analisi,03/10,
+,Trattoria Morè,Colombo F.,A,Marta,Sito strutturato,Gestione,,,
+,Estetica Le Muse,Ferrian,AAA,Marta,Ecommerce,Gestione,,,
+,Yoko,Sciascia,AAA,Marta,Ecommerce,Gestione,,,
+,Bmed,Baratta,A,Marta,Sito strutturato,Gestione,,,
+23/09,Forensia,Federica C.,AAA,Marta,Sito strutturato,Prima call,,16/10,Progetto grafico
+,BZ consulting,Federica C.,AAA,Marta,Landing page,In revisione,,,"""
 
 def parse_date(date_str):
     """Converte data dal formato dd/mm al formato completo assumendo anno 2024"""
@@ -61,12 +69,14 @@ def map_servizio(servizio_excel):
     mapping = {
         'Sito vetrina': 'sito_vetrina',
         'Sito strutturato': 'sito_strutturato',
+        'Sito': 'sito_strutturato',
         'Landing page': 'landing_page',
         'App/webapp': 'app_webapp',
         'E-commerce': 'ecommerce',
         'Ecommerce': 'ecommerce',
         'Blog': 'blog',
         'Mantenimento': 'mantenimento',
+        'Gestione': 'gestione',
     }
     return mapping.get(servizio_excel, 'sito_vetrina')
 

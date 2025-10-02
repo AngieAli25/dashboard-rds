@@ -38,6 +38,7 @@ class Client(models.Model):
         ('app_webapp', 'App/Webapp'),
         ('blog', 'Blog'),
         ('mantenimento', 'Mantenimento'),
+        ('gestione', 'Gestione'),
     ]
     
     FASE_PROCESSO_CHOICES = [
@@ -69,7 +70,7 @@ class Client(models.Model):
     account_riferimento = models.CharField(max_length=200, blank=True)
     tipologia_cliente = models.CharField(max_length=3, choices=TIPOLOGIA_CHOICES)
     servizio = models.CharField(max_length=50, choices=SERVIZIO_CHOICES)
-    data_richiesta = models.DateField(auto_now_add=True)
+    data_richiesta = models.DateField(null=True, blank=True)
     operatore = models.ForeignKey(TeamMember, on_delete=models.SET_NULL, null=True, blank=True, related_name='clienti')
     fase_processo = models.CharField(max_length=50, choices=FASE_PROCESSO_CHOICES, blank=True)
     seo_stato = models.CharField(max_length=50, choices=SEO_STATO_CHOICES, blank=True)
@@ -81,7 +82,7 @@ class Client(models.Model):
     class Meta:
         verbose_name = "Cliente"
         verbose_name_plural = "Clienti"
-        ordering = ['scadenza', 'nome_attivita']
+        ordering = ['-data_richiesta', 'nome_attivita']
     
     def __str__(self):
         return self.nome_attivita

@@ -9,7 +9,7 @@ import { TIPOLOGIA_CLIENTE_CHOICES, SERVIZIO_CHOICES, FASE_PROCESSO_CHOICES } fr
 
 interface EditableCellProps {
   value: string | number | null;
-  type: 'text' | 'select' | 'date' | 'badge';
+  type: 'text' | 'select' | 'date' | 'badge' | 'badge-select';
   options?: Array<{ value: string; label: string }>;
   onSave: (newValue: string) => void;
   className?: string;
@@ -27,7 +27,28 @@ export function EditableCell({
   displayValue
 }: EditableCellProps) {
   const [isEditing, setIsEditing] = useState(false);
-  const [editValue, setEditValue] = useState(value?.toString() || '');
+  const [editValue, setEditValue] = useState(() => {
+    if (!value) return '';
+    if (type === 'date' && value) {
+      // Assicuriamoci che la data sia nel formato corretto per l'input HTML (YYYY-MM-DD)
+      const dateStr = value.toString();
+      if (dateStr.includes('/')) {
+        // Se è nel formato DD/MM/YYYY, convertiamo
+        const [day, month, year] = dateStr.split('/');
+        return `${year || '2024'}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+      }
+      // Se è già nel formato YYYY-MM-DD, usiamolo così com'è
+      if (dateStr.match(/^\d{4}-\d{2}-\d{2}$/)) {
+        return dateStr;
+      }
+      // Se è un oggetto Date, convertiamolo
+      const date = new Date(dateStr);
+      if (!isNaN(date.getTime())) {
+        return date.toISOString().split('T')[0];
+      }
+    }
+    return value.toString();
+  });
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -36,13 +57,54 @@ export function EditableCell({
     }
   }, [isEditing]);
 
+  // Aggiorna editValue quando il valore cambia dall'esterno
+  useEffect(() => {
+    if (!isEditing) {
+      if (type === 'date' && value) {
+        const dateStr = value.toString();
+        if (dateStr.includes('/')) {
+          const [day, month, year] = dateStr.split('/');
+          setEditValue(`${year || '2024'}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`);
+        } else if (dateStr.match(/^\d{4}-\d{2}-\d{2}$/)) {
+          setEditValue(dateStr);
+        } else {
+          const date = new Date(dateStr);
+          if (!isNaN(date.getTime())) {
+            setEditValue(date.toISOString().split('T')[0]);
+          } else {
+            setEditValue('');
+          }
+        }
+      } else {
+        setEditValue(value?.toString() || '');
+      }
+    }
+  }, [value, type, isEditing]);
+
   const handleSave = () => {
     onSave(editValue);
     setIsEditing(false);
   };
 
   const handleCancel = () => {
-    setEditValue(value?.toString() || '');
+    if (type === 'date' && value) {
+      const dateStr = value.toString();
+      if (dateStr.includes('/')) {
+        const [day, month, year] = dateStr.split('/');
+        setEditValue(`${year || '2024'}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`);
+      } else if (dateStr.match(/^\d{4}-\d{2}-\d{2}$/)) {
+        setEditValue(dateStr);
+      } else {
+        const date = new Date(dateStr);
+        if (!isNaN(date.getTime())) {
+          setEditValue(date.toISOString().split('T')[0]);
+        } else {
+          setEditValue('');
+        }
+      }
+    } else {
+      setEditValue(value?.toString() || '');
+    }
     setIsEditing(false);
   };
 
@@ -61,7 +123,7 @@ export function EditableCell({
       return new Date(val.toString()).toLocaleDateString('it-IT');
     }
     
-    if (type === 'badge') {
+    if (type === 'badge' || type === 'badge-select') {
       const badgeClass = val === 'AAA' ? 'bg-red-100 text-red-800' :
                         val === 'A' ? 'bg-yellow-100 text-yellow-800' :
                         'bg-green-100 text-green-800';
@@ -88,7 +150,7 @@ export function EditableCell({
   if (isEditing) {
     return (
       <div className="flex items-center space-x-2">
-        {type === 'select' ? (
+        {(type === 'select' || type === 'badge-select') ? (
           <Select
             value={editValue}
             onChange={(val) => setEditValue(val as string)}

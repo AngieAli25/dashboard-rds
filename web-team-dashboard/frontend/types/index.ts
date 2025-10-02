@@ -12,7 +12,7 @@ export interface Client {
   nome_attivita: string;
   account_riferimento: string;
   tipologia_cliente: 'AAA' | 'A' | 'B';
-  servizio: 'sito_vetrina' | 'sito_strutturato' | 'ecommerce' | 'landing_page' | 'app_webapp' | 'blog' | 'mantenimento';
+  servizio: 'sito_vetrina' | 'sito_strutturato' | 'ecommerce' | 'landing_page' | 'app_webapp' | 'blog' | 'mantenimento' | 'gestione';
   servizio_display: string;
   data_richiesta: string;
   operatore: number | null;
@@ -91,6 +91,7 @@ export const SERVIZIO_CHOICES = [
   { value: 'app_webapp', label: 'App/Webapp' },
   { value: 'blog', label: 'Blog' },
   { value: 'mantenimento', label: 'Mantenimento' },
+  { value: 'gestione', label: 'Gestione' },
 ];
 
 export const FASE_PROCESSO_CHOICES = [

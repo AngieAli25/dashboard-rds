@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Plus, Users, Filter, Download } from 'lucide-react';
+import { Plus, Users, Filter, Download, ChevronUp, ChevronDown, ChevronsUpDown } from 'lucide-react';
 import { clientsApi, teamApi } from '@/lib/api';
 import { Client, TeamMember } from '@/types';
 import { ClientFilters } from '@/components/clients/ClientFilters';
@@ -22,6 +22,13 @@ export default function ClientiPage() {
     servizio: '',
     fase_processo: '',
     scadenza: ''
+  });
+  const [sortConfig, setSortConfig] = useState<{
+    key: 'data_richiesta' | 'scadenza' | null;
+    direction: 'asc' | 'desc';
+  }>({
+    key: 'data_richiesta',
+    direction: 'desc'
   });
 
   useEffect(() => {
@@ -89,6 +96,23 @@ export default function ClientiPage() {
     }
   };
 
+  const handleSort = (key: 'data_richiesta' | 'scadenza') => {
+    let direction: 'asc' | 'desc' = 'asc';
+    if (sortConfig.key === key && sortConfig.direction === 'asc') {
+      direction = 'desc';
+    }
+    setSortConfig({ key, direction });
+  };
+
+  const getSortIcon = (key: 'data_richiesta' | 'scadenza') => {
+    if (sortConfig.key !== key) {
+      return <ChevronsUpDown className="h-4 w-4 text-gray-400" />;
+    }
+    return sortConfig.direction === 'asc' ? 
+      <ChevronUp className="h-4 w-4 text-gray-600" /> : 
+      <ChevronDown className="h-4 w-4 text-gray-600" />;
+  };
+
   // Calculate KPIs
   const activeClients = clients.filter(c => c.is_active && !c.is_standby && !c.is_maintenance).length;
   const standbyClients = clients.filter(c => c.is_standby).length;
@@ -103,23 +127,43 @@ export default function ClientiPage() {
     })),
   ];
 
-  // Filter clients
-  const filteredClients = clients.filter(client => {
-    const matchesSearch = !filters.search || 
-      client.nome_attivita.toLowerCase().includes(filters.search.toLowerCase()) ||
-      client.account_riferimento.toLowerCase().includes(filters.search.toLowerCase());
-    
-    const matchesOperatore = !filters.operatore || 
-      client.operatore?.toString() === filters.operatore;
-    
-    const matchesServizio = !filters.servizio || 
-      client.servizio === filters.servizio;
-    
-    const matchesFase = !filters.fase_processo || 
-      client.fase_processo === filters.fase_processo;
+  // Filter and sort clients
+  const filteredAndSortedClients = clients
+    .filter(client => {
+      const matchesSearch = !filters.search || 
+        client.nome_attivita.toLowerCase().includes(filters.search.toLowerCase()) ||
+        client.account_riferimento.toLowerCase().includes(filters.search.toLowerCase());
+      
+      const matchesOperatore = !filters.operatore || 
+        client.operatore?.toString() === filters.operatore;
+      
+      const matchesServizio = !filters.servizio || 
+        client.servizio === filters.servizio;
+      
+      const matchesFase = !filters.fase_processo || 
+        client.fase_processo === filters.fase_processo;
 
-    return matchesSearch && matchesOperatore && matchesServizio && matchesFase;
-  });
+      return matchesSearch && matchesOperatore && matchesServizio && matchesFase;
+    })
+    .sort((a, b) => {
+      if (!sortConfig.key) return 0;
+      
+      const aValue = a[sortConfig.key];
+      const bValue = b[sortConfig.key];
+      
+      if (!aValue && !bValue) return 0;
+      if (!aValue) return 1;
+      if (!bValue) return -1;
+      
+      const dateA = new Date(aValue);
+      const dateB = new Date(bValue);
+      
+      if (sortConfig.direction === 'asc') {
+        return dateA.getTime() - dateB.getTime();
+      } else {
+        return dateB.getTime() - dateA.getTime();
+      }
+    });
 
   if (loading) {
     return (
@@ -192,36 +236,48 @@ export default function ClientiPage() {
             <thead className="bg-gray-50">
               <tr>
                 <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
-                  Data di richiesta
+                  <button
+                    onClick={() => handleSort('data_richiesta')}
+                    className="flex items-center space-x-1 hover:text-gray-700 transition-colors"
+                  >
+                    <span>DATA DI RICHIESTA</span>
+                    {getSortIcon('data_richiesta')}
+                  </button>
                 </th>
                 <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Cliente
+                  CLIENTE
                 </th>
                 <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Tipologia
+                  TIPOLOGIA
                 </th>
                 <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Operatore
+                  OPERATORE
                 </th>
                 <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Servizio
+                  SERVIZIO
                 </th>
                 <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Fase del processo
+                  FASE DEL PROCESSO
                 </th>
                 <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   SEO
                 </th>
                 <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Scadenza
+                  <button
+                    onClick={() => handleSort('scadenza')}
+                    className="flex items-center space-x-1 hover:text-gray-700 transition-colors"
+                  >
+                    <span>SCADENZA</span>
+                    {getSortIcon('scadenza')}
+                  </button>
                 </th>
                 <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Note
+                  NOTE
                 </th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {filteredClients.map((client) => (
+              {filteredAndSortedClients.map((client) => (
                 <tr key={client.id} className="hover:bg-gray-50">
                   <td className="px-4 py-4 whitespace-nowrap">
                     <EditableCell
@@ -230,20 +286,20 @@ export default function ClientiPage() {
                       onSave={(value) => handleFieldUpdate(client.id, 'data_richiesta', value)}
                     />
                   </td>
-                  <td className="px-4 py-4 whitespace-nowrap">
+                  <td className="px-4 py-4 whitespace-nowrap max-w-[200px]">
                     <div className="space-y-1">
                       <EditableCell
                         value={client.nome_attivita}
                         type="text"
                         onSave={(value) => handleFieldUpdate(client.id, 'nome_attivita', value)}
-                        className="text-sm font-medium text-gray-900"
+                        className="text-sm font-medium text-gray-900 truncate block"
                         placeholder="Nome attività"
                       />
                       <EditableCell
                         value={client.account_riferimento}
                         type="text"
                         onSave={(value) => handleFieldUpdate(client.id, 'account_riferimento', value)}
-                        className="text-sm text-gray-500"
+                        className="text-sm text-gray-500 truncate block"
                         placeholder="Account riferimento"
                       />
                     </div>
@@ -251,7 +307,7 @@ export default function ClientiPage() {
                   <td className="px-4 py-4 whitespace-nowrap">
                     <EditableCell
                       value={client.tipologia_cliente}
-                      type="badge"
+                      type="badge-select"
                       options={TIPOLOGIA_CLIENTE_CHOICES}
                       onSave={(value) => handleFieldUpdate(client.id, 'tipologia_cliente', value)}
                     />
@@ -311,7 +367,7 @@ export default function ClientiPage() {
           </table>
         </div>
         
-        {filteredClients.length === 0 && (
+        {filteredAndSortedClients.length === 0 && (
           <div className="text-center py-12">
             <Users className="h-12 w-12 text-gray-400 mx-auto mb-4" />
             <h3 className="text-lg font-medium text-gray-900 mb-2">

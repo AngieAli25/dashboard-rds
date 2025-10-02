@@ -50,6 +50,11 @@ export function AddClientModal({ isOpen, onClose, onClientAdded }: AddClientModa
       return;
     }
 
+    if (!formData.account_riferimento.trim()) {
+      toast.error('L\'account di riferimento è obbligatorio');
+      return;
+    }
+
     try {
       setLoading(true);
       
@@ -105,10 +110,11 @@ export function AddClientModal({ isOpen, onClose, onClientAdded }: AddClientModa
           />
           
           <Input
-            label="Account di Riferimento"
+            label="Account di Riferimento (cognome) *"
             value={formData.account_riferimento}
             onChange={(e) => setFormData({ ...formData, account_riferimento: e.target.value })}
-            placeholder="Es. Mario Rossi"
+            placeholder="Es. Rossi"
+            required
           />
         </div>
 
@@ -145,7 +151,7 @@ export function AddClientModal({ isOpen, onClose, onClientAdded }: AddClientModa
               className="rounded border-gray-300 text-primary-600 focus:ring-primary-500"
             />
             <span className="text-sm font-medium text-gray-700">
-              Richiede servizi SEO
+              Richiede servizi SEO avanzata (esempio: gestione continuativa, blog e scrittura di articoli)
             </span>
           </label>
           <p className="text-xs text-gray-500 mt-1">

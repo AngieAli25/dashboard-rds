@@ -49,7 +49,9 @@ export function TeamMemberCard({ member }: TeamMemberCardProps) {
               Progetti in corso:
             </h4>
             <div className="space-y-2">
-              {Object.entries(member.client_types).map(([serviceType, clients]) => (
+              {Object.entries(member.client_types)
+                .sort(([a], [b]) => a.localeCompare(b))
+                .map(([serviceType, clients]) => (
                 <div key={serviceType} className="space-y-1">
                   <div className="flex items-center justify-between">
                     <span className="text-sm font-semibold text-gray-800">{serviceType}</span>
