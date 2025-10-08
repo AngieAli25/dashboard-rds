@@ -22,7 +22,7 @@ export function AddClientModal({ isOpen, onClose, onClientAdded }: AddClientModa
     nome_attivita: '',
     account_riferimento: '',
     tipologia_cliente: 'A' as 'AAA' | 'A' | 'B',
-    servizio: 'sito_vetrina',
+    servizio: 'sito_vetrina' as 'sito_vetrina' | 'sito_strutturato' | 'ecommerce' | 'landing_page' | 'app_webapp' | 'blog' | 'mantenimento' | 'gestione',
     seo_required: false,
     note: '',
   });
@@ -136,7 +136,7 @@ export function AddClientModal({ isOpen, onClose, onClientAdded }: AddClientModa
             </label>
             <Select
               value={formData.servizio}
-              onChange={(value) => setFormData({ ...formData, servizio: value as string })}
+              onChange={(value) => setFormData({ ...formData, servizio: value as 'sito_vetrina' | 'sito_strutturato' | 'ecommerce' | 'landing_page' | 'app_webapp' | 'blog' | 'mantenimento' | 'gestione' })}
               options={SERVIZIO_CHOICES}
             />
           </div>

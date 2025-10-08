@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Plus, Users, Filter, Download, ChevronUp, ChevronDown, ChevronsUpDown } from 'lucide-react';
+import { Plus, Users, ChevronUp, ChevronDown, ChevronsUpDown } from 'lucide-react';
 import { clientsApi, teamApi } from '@/lib/api';
 import { Client, TeamMember } from '@/types';
 import { ClientFilters } from '@/components/clients/ClientFilters';
@@ -21,7 +21,8 @@ export default function ClientiPage() {
     operatore: '',
     servizio: '',
     fase_processo: '',
-    scadenza: ''
+    seo_stato: '',
+    scadenza_filter: ''
   });
   const [sortConfig, setSortConfig] = useState<{
     key: 'data_richiesta' | 'scadenza' | null;
@@ -53,30 +54,13 @@ export default function ClientiPage() {
     fetchData();
   }, []);
 
-  const handleClientUpdate = async (clientId: number, data: Partial<Client>) => {
+  const handleClientAdded = async () => {
     try {
-      const updatedClient = await clientsApi.update(clientId, data);
-      setClients(prev => 
-        prev.map(client => 
-          client.id === clientId ? updatedClient : client
-        )
-      );
-      toast.success('Cliente aggiornato');
+      const clientsData = await clientsApi.getAll();
+      setClients(clientsData.results);
     } catch (error) {
-      console.error('Error updating client:', error);
-      toast.error('Errore nell\'aggiornamento');
-    }
-  };
-
-  const handleClientAdd = async (data: any) => {
-    try {
-      const newClient = await clientsApi.create(data);
-      setClients(prev => [newClient, ...prev]);
-      setIsAddModalOpen(false);
-      toast.success('Cliente aggiunto');
-    } catch (error) {
-      console.error('Error adding client:', error);
-      toast.error('Errore nell\'aggiunta del cliente');
+      console.error('Error fetching clients:', error);
+      toast.error('Errore nel caricamento dei clienti');
     }
   };
 
@@ -225,7 +209,8 @@ export default function ClientiPage() {
           operatore: '',
           servizio: '',
           fase_processo: '',
-          scadenza: ''
+          seo_stato: '',
+          scadenza_filter: ''
         })}
       />
 
@@ -387,8 +372,7 @@ export default function ClientiPage() {
       <AddClientModal
         isOpen={isAddModalOpen}
         onClose={() => setIsAddModalOpen(false)}
-        onSubmit={handleClientAdd}
-        teamMembers={teamMembers}
+        onClientAdded={handleClientAdded}
       />
     </div>
   );

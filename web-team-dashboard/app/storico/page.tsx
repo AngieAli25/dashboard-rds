@@ -59,12 +59,12 @@ export default function StoricoPage() {
         if (currentDate.getFullYear() >= 2025 && currentDate.getMonth() >= 9) { // Ottobre = mese 9 (0-based)
           simulatedSnapshots.push({
             id: 1,
-            month: currentDate.getMonth() + 1,
-            year: currentDate.getFullYear(),
-            active_clients: realActiveClients,
-            standby_clients: realStandbyClients,
-            maintenance_clients: realMaintenanceClients,
-            total_clients: realActiveClients + realStandbyClients + realMaintenanceClients,
+            mese: currentDate.getMonth() + 1,
+            anno: currentDate.getFullYear(),
+            clienti_attivi: realActiveClients,
+            clienti_standby: realStandbyClients,
+            clienti_mantenimento: realMaintenanceClients,
+            data_json: {},
             created_at: `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}-01T00:00:00Z`
           });
         }
@@ -241,28 +241,28 @@ export default function StoricoPage() {
               {displayedSnapshots.map((snapshot) => (
                 <tr key={snapshot.id} className="border-b border-gray-100 hover:bg-gray-50">
                   <td className="py-3 px-4 text-gray-900">
-                    {new Date(snapshot.year, snapshot.month - 1).toLocaleDateString('it-IT', { 
-                      month: 'long', 
-                      year: 'numeric' 
+                    {new Date(snapshot.anno, snapshot.mese - 1).toLocaleDateString('it-IT', {
+                      month: 'long',
+                      year: 'numeric'
                     })}
                   </td>
                   <td className="py-3 px-4">
                     <span className="inline-flex px-2 py-1 text-sm font-semibold rounded-full bg-blue-100 text-blue-800">
-                      {snapshot.active_clients}
+                      {snapshot.clienti_attivi}
                     </span>
                   </td>
                   <td className="py-3 px-4">
                     <span className="inline-flex px-2 py-1 text-sm font-semibold rounded-full bg-yellow-100 text-yellow-800">
-                      {snapshot.standby_clients}
+                      {snapshot.clienti_standby}
                     </span>
                   </td>
                   <td className="py-3 px-4">
                     <span className="inline-flex px-2 py-1 text-sm font-semibold rounded-full bg-green-100 text-green-800">
-                      {snapshot.maintenance_clients}
+                      {snapshot.clienti_mantenimento}
                     </span>
                   </td>
                   <td className="py-3 px-4 font-semibold text-gray-900">
-                    {snapshot.total_clients}
+                    {snapshot.clienti_attivi + snapshot.clienti_standby + snapshot.clienti_mantenimento}
                   </td>
                 </tr>
               ))}
