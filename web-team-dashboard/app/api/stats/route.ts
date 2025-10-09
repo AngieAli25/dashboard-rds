@@ -3,11 +3,21 @@ import { prisma } from '@/lib/db';
 
 export async function GET() {
   try {
+    // Active clients: all clients EXCEPT those with state online, stand_by, insoluto or service type mantenimento
     const activeClients = await prisma.client.count({
       where: {
-        faseProcesso: {
-          in: ['prima_call', 'implementazione', 'presentazione', 'da_mettere_online'],
-        },
+        AND: [
+          {
+            faseProcesso: {
+              notIn: ['online', 'stand_by', 'insoluto'],
+            },
+          },
+          {
+            servizio: {
+              not: 'mantenimento',
+            },
+          },
+        ],
       },
     });
 
@@ -19,10 +29,7 @@ export async function GET() {
 
     const maintenanceClients = await prisma.client.count({
       where: {
-        OR: [
-          { servizio: 'mantenimento' },
-          { faseProcesso: 'mantenimento' },
-        ],
+        servizio: 'mantenimento',
       },
     });
 
