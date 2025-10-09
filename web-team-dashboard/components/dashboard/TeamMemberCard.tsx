@@ -9,20 +9,21 @@ interface TeamMemberCardProps {
 }
 
 export function TeamMemberCard({ member }: TeamMemberCardProps) {
-  // Avatar colors based on member name
-  const getAvatarColor = (name: string) => {
-    const colors = [
-      'bg-blue-500',
-      'bg-green-500',
-      'bg-purple-500',
-      'bg-pink-500',
-      'bg-indigo-500',
-      'bg-yellow-500',
-      'bg-red-500',
-      'bg-teal-500',
+  // Avatar colors - pastel colors, each member gets a unique color
+  const getAvatarColor = (memberId: number) => {
+    const pastelColors = [
+      'bg-pink-300',      // Pastel pink
+      'bg-blue-300',      // Pastel blue
+      'bg-purple-300',    // Pastel purple
+      'bg-green-300',     // Pastel green
+      'bg-yellow-300',    // Pastel yellow
+      'bg-orange-300',    // Pastel orange
+      'bg-teal-300',      // Pastel teal
+      'bg-indigo-300',    // Pastel indigo
     ];
-    const index = name.charCodeAt(0) % colors.length;
-    return colors[index];
+    // Use member ID to ensure consistent color per member
+    const index = (memberId - 1) % pastelColors.length;
+    return pastelColors[index];
   };
 
   // Service type labels
@@ -44,14 +45,14 @@ export function TeamMemberCard({ member }: TeamMemberCardProps) {
   };
 
   const roleColor = roleColors[member.role as keyof typeof roleColors] || 'bg-gray-100 text-gray-800';
-  const avatarColor = getAvatarColor(member.name);
+  const avatarColor = getAvatarColor(member.id);
   const initial = member.name.charAt(0).toUpperCase();
 
   return (
     <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm hover:shadow-md transition-shadow">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center">
-          <div className={cn('rounded-full w-10 h-10 flex items-center justify-center mr-3 text-white font-bold text-lg', avatarColor)}>
+          <div className={cn('rounded-full w-10 h-10 flex items-center justify-center mr-3 text-gray-800 font-bold text-lg', avatarColor)}>
             {initial}
           </div>
           <div>
