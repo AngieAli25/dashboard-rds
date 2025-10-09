@@ -298,18 +298,33 @@ export default function ClientiPage() {
                     />
                   </td>
                   <td className="px-4 py-4">
-                    <div className="flex flex-wrap gap-1">
+                    <div className="flex items-center gap-1">
                       {client.operatori_details && client.operatori_details.length > 0 ? (
-                        client.operatori_details.map((op: any) => (
-                          <span
-                            key={op.id}
-                            className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800"
-                          >
-                            {op.name}
-                          </span>
-                        ))
+                        client.operatori_details.map((op: any) => {
+                          const initial = op.name.charAt(0).toUpperCase();
+                          const avatarStyles = [
+                            { bg: 'bg-blue-50', text: 'text-blue-600' },
+                            { bg: 'bg-purple-50', text: 'text-purple-600' },
+                            { bg: 'bg-green-50', text: 'text-green-600' },
+                            { bg: 'bg-orange-50', text: 'text-orange-600' },
+                            { bg: 'bg-pink-50', text: 'text-pink-600' },
+                            { bg: 'bg-indigo-50', text: 'text-indigo-600' },
+                            { bg: 'bg-teal-50', text: 'text-teal-600' },
+                            { bg: 'bg-yellow-50', text: 'text-yellow-600' },
+                          ];
+                          const style = avatarStyles[(op.id - 1) % avatarStyles.length];
+                          return (
+                            <div
+                              key={op.id}
+                              className={`w-8 h-8 rounded-lg flex items-center justify-center text-xs font-semibold ${style.bg} ${style.text}`}
+                              title={op.name}
+                            >
+                              {initial}
+                            </div>
+                          );
+                        })
                       ) : (
-                        <span className="text-sm text-gray-400">Non assegnato</span>
+                        <span className="text-sm text-gray-400">-</span>
                       )}
                     </div>
                   </td>
