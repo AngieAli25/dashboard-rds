@@ -7,6 +7,7 @@ import { Client, TeamMember } from '@/types';
 import { ClientFilters } from '@/components/clients/ClientFilters';
 import { AddClientModal } from '@/components/clients/AddClientModal';
 import { EditableCell } from '@/components/clients/EditableCell';
+import { EditableOperators } from '@/components/clients/EditableOperators';
 import { KPICard } from '@/components/dashboard/KPICard';
 import { TIPOLOGIA_CLIENTE_CHOICES, SERVIZIO_CHOICES, FASE_PROCESSO_CHOICES, SEO_STATO_CHOICES } from '@/types';
 import toast from 'react-hot-toast';
@@ -68,8 +69,8 @@ export default function ClientiPage() {
     try {
       const updateData = { [field]: value };
       const updatedClient = await clientsApi.update(clientId, updateData);
-      setClients(prev => 
-        prev.map(client => 
+      setClients(prev =>
+        prev.map(client =>
           client.id === clientId ? updatedClient : client
         )
       );
@@ -77,6 +78,22 @@ export default function ClientiPage() {
     } catch (error) {
       console.error('Error updating field:', error);
       toast.error('Errore nell\'aggiornamento del campo');
+    }
+  };
+
+  const handleOperatorsUpdate = async (clientId: number, operatorIds: number[]) => {
+    try {
+      const updateData = { operatori: operatorIds };
+      const updatedClient = await clientsApi.update(clientId, updateData);
+      setClients(prev =>
+        prev.map(client =>
+          client.id === clientId ? updatedClient : client
+        )
+      );
+      toast.success('Operatori aggiornati');
+    } catch (error) {
+      console.error('Error updating operators:', error);
+      toast.error('Errore nell\'aggiornamento degli operatori');
     }
   };
 
@@ -298,35 +315,11 @@ export default function ClientiPage() {
                     />
                   </td>
                   <td className="px-4 py-4">
-                    <div className="flex items-center gap-1">
-                      {client.operatori_details && client.operatori_details.length > 0 ? (
-                        client.operatori_details.map((op: any) => {
-                          const initial = op.name.charAt(0).toUpperCase();
-                          const avatarStyles = [
-                            { bg: 'bg-blue-50', text: 'text-blue-600' },
-                            { bg: 'bg-purple-50', text: 'text-purple-600' },
-                            { bg: 'bg-green-50', text: 'text-green-600' },
-                            { bg: 'bg-orange-50', text: 'text-orange-600' },
-                            { bg: 'bg-pink-50', text: 'text-pink-600' },
-                            { bg: 'bg-indigo-50', text: 'text-indigo-600' },
-                            { bg: 'bg-teal-50', text: 'text-teal-600' },
-                            { bg: 'bg-yellow-50', text: 'text-yellow-600' },
-                          ];
-                          const style = avatarStyles[(op.id - 1) % avatarStyles.length];
-                          return (
-                            <div
-                              key={op.id}
-                              className={`w-8 h-8 rounded-lg flex items-center justify-center text-xs font-semibold ${style.bg} ${style.text}`}
-                              title={op.name}
-                            >
-                              {initial}
-                            </div>
-                          );
-                        })
-                      ) : (
-                        <span className="text-sm text-gray-400">-</span>
-                      )}
-                    </div>
+                    <EditableOperators
+                      operators={client.operatori_details || []}
+                      allOperators={teamMembers}
+                      onSave={(operatorIds) => handleOperatorsUpdate(client.id, operatorIds)}
+                    />
                   </td>
                   <td className="px-4 py-4 whitespace-nowrap">
                     <EditableCell
