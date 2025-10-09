@@ -1,6 +1,6 @@
 'use client';
 
-import { User, Briefcase } from 'lucide-react';
+import { Briefcase } from 'lucide-react';
 import { TeamWorkload } from '@/types';
 import { cn } from '@/lib/utils';
 
@@ -9,19 +9,38 @@ interface TeamMemberCardProps {
 }
 
 export function TeamMemberCard({ member }: TeamMemberCardProps) {
-  const roleColors = {
-    'Sviluppatore Web': 'bg-primary-50 text-primary-700 border-primary-200',
-    'SEO Specialist': 'bg-accent-50 text-accent-700 border-accent-200',
+  // Avatar colors based on member name
+  const getAvatarColor = (name: string) => {
+    const colors = [
+      'bg-blue-500',
+      'bg-green-500',
+      'bg-purple-500',
+      'bg-pink-500',
+      'bg-indigo-500',
+      'bg-yellow-500',
+      'bg-red-500',
+      'bg-teal-500',
+    ];
+    const index = name.charCodeAt(0) % colors.length;
+    return colors[index];
   };
 
-  const roleColor = roleColors[member.role as keyof typeof roleColors] || 'bg-gray-50 text-gray-700 border-gray-200';
+  // Role badge colors
+  const roleColors = {
+    'developer': 'bg-teal-100 text-teal-800',
+    'seo': 'bg-purple-100 text-purple-800',
+  };
+
+  const roleColor = roleColors[member.role as keyof typeof roleColors] || 'bg-gray-100 text-gray-800';
+  const avatarColor = getAvatarColor(member.name);
+  const initial = member.name.charAt(0).toUpperCase();
 
   return (
     <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm hover:shadow-md transition-shadow">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center">
-          <div className="bg-gray-100 rounded-full p-2 mr-3">
-            <User className="h-5 w-5 text-gray-600" />
+          <div className={cn('rounded-full w-10 h-10 flex items-center justify-center mr-3 text-white font-bold text-lg', avatarColor)}>
+            {initial}
           </div>
           <div>
             <h3 className="text-lg font-semibold text-gray-900">{member.name}</h3>
