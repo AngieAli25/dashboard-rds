@@ -20,7 +20,7 @@ model TeamMember {
   updatedAt DateTime @updatedAt @map("updated_at")
 
   // Relations
-  clients        Client[]         @relation("OperatoreClients")
+  clients        ClientOperator[]
   projectHistory ProjectHistory[]
 
   @@map("team_members")
@@ -33,7 +33,6 @@ model Client {
   tipologiaCliente     String    @map("tipologia_cliente") @db.VarChar(3) // 'AAA', 'A', 'B'
   servizio             String    @db.VarChar(50) // 'sito_vetrina', 'sito_strutturato', etc.
   dataRichiesta        DateTime? @map("data_richiesta") @db.Date
-  operatoreId          Int?      @map("operatore_id")
   faseProcesso         String    @default("") @map("fase_processo") @db.VarChar(50)
   seoStato             String    @default("") @map("seo_stato") @db.VarChar(50)
   scadenza             DateTime? @db.Date
@@ -42,10 +41,25 @@ model Client {
   updatedAt            DateTime  @updatedAt @map("updated_at")
 
   // Relations
-  operatore      TeamMember?      @relation("OperatoreClients", fields: [operatoreId], references: [id], onDelete: SetNull)
+  operators      ClientOperator[]
   projectHistory ProjectHistory[]
 
   @@map("clients")
+}
+
+// Join table for many-to-many relationship between Client and TeamMember
+model ClientOperator {
+  id           Int        @id @default(autoincrement())
+  clientId     Int        @map("client_id")
+  teamMemberId Int        @map("team_member_id")
+  assignedAt   DateTime   @default(now()) @map("assigned_at")
+
+  // Relations
+  client     Client     @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  teamMember TeamMember @relation(fields: [teamMemberId], references: [id], onDelete: Cascade)
+
+  @@unique([clientId, teamMemberId])
+  @@map("client_operators")
 }
 
 model ProjectHistory {

@@ -1,0 +1,622 @@
+[
+{
+  "model": "clients.teammember",
+  "pk": 1,
+  "fields": {
+    "name": "Federica",
+    "role": "developer",
+    "active": true,
+    "created_at": "2025-09-17T13:49:56.782Z",
+    "updated_at": "2025-09-17T13:49:56.782Z"
+  }
+},
+{
+  "model": "clients.teammember",
+  "pk": 2,
+  "fields": {
+    "name": "Marta",
+    "role": "developer",
+    "active": true,
+    "created_at": "2025-09-17T13:49:56.783Z",
+    "updated_at": "2025-09-17T13:49:56.783Z"
+  }
+},
+{
+  "model": "clients.teammember",
+  "pk": 3,
+  "fields": {
+    "name": "Edoardo",
+    "role": "developer",
+    "active": true,
+    "created_at": "2025-09-17T13:49:56.784Z",
+    "updated_at": "2025-09-17T13:49:56.784Z"
+  }
+},
+{
+  "model": "clients.teammember",
+  "pk": 4,
+  "fields": {
+    "name": "Virginia",
+    "role": "seo",
+    "active": true,
+    "created_at": "2025-09-17T13:49:56.784Z",
+    "updated_at": "2025-09-17T13:49:56.784Z"
+  }
+},
+{
+  "model": "clients.client",
+  "pk": 41,
+  "fields": {
+    "nome_attivita": "Worklab",
+    "account_riferimento": "Baratta",
+    "tipologia_cliente": "AAA",
+    "servizio": "sito_vetrina",
+    "data_richiesta": "2025-07-15",
+    "operatore": 1,
+    "fase_processo": "in_revisione",
+    "seo_stato": "analisi",
+    "scadenza": "2025-09-26",
+    "note": "in attesa di feedback da cliente",
+    "created_at": "2025-10-02T14:50:36.089Z",
+    "updated_at": "2025-10-02T14:53:38.395Z"
+  }
+},
+{
+  "model": "clients.client",
+  "pk": 42,
+  "fields": {
+    "nome_attivita": "Worklab",
+    "account_riferimento": "Baratta",
+    "tipologia_cliente": "AAA",
+    "servizio": "landing_page",
+    "data_richiesta": "2025-07-15",
+    "operatore": 1,
+    "fase_processo": "in_revisione",
+    "seo_stato": "analisi",
+    "scadenza": "2025-09-26",
+    "note": "in attesa di feedback da cliente",
+    "created_at": "2025-10-02T14:50:36.090Z",
+    "updated_at": "2025-10-02T14:53:38.396Z"
+  }
+},
+{
+  "model": "clients.client",
+  "pk": 43,
+  "fields": {
+    "nome_attivita": "D come Dalia",
+    "account_riferimento": "Del Foro",
+    "tipologia_cliente": "B",
+    "servizio": "sito_strutturato",
+    "data_richiesta": "2025-09-17",
+    "operatore": 1,
+    "fase_processo": "implementazione",
+    "seo_stato": "analisi",
+    "scadenza": "2025-10-03",
+    "note": "Restyling",
+    "created_at": "2025-10-02T14:50:36.091Z",
+    "updated_at": "2025-10-02T14:53:38.398Z"
+  }
+},
+{
+  "model": "clients.client",
+  "pk": 44,
+  "fields": {
+    "nome_attivita": "La Piazzetta",
+    "account_riferimento": "Rubinato",
+    "tipologia_cliente": "A",
+    "servizio": "sito_vetrina",
+    "data_richiesta": "2025-09-05",
+    "operatore": 1,
+    "fase_processo": "implementazione",
+    "seo_stato": "analisi",
+    "scadenza": "2025-10-10",
+    "note": "",
+    "created_at": "2025-10-02T14:50:36.091Z",
+    "updated_at": "2025-10-02T14:53:38.401Z"
+  }
+},
+{
+  "model": "clients.client",
+  "pk": 45,
+  "fields": {
+    "nome_attivita": "Fidilink",
+    "account_riferimento": "Clerici",
+    "tipologia_cliente": "AAA",
+    "servizio": "sito_strutturato",
+    "data_richiesta": "2025-01-03",
+    "operatore": 1,
+    "fase_processo": "in_revisione",
+    "seo_stato": "gestione_seo",
+    "scadenza": null,
+    "note": "in attesa di feedback da cliente",
+    "created_at": "2025-10-02T14:50:36.092Z",
+    "updated_at": "2025-10-02T15:53:52.857Z"
+  }
+},
+{
+  "model": "clients.client",
+  "pk": 46,
+  "fields": {
+    "nome_attivita": "Depaoli",
+    "account_riferimento": "Sciascia",
+    "tipologia_cliente": "AAA",
+    "servizio": "sito_strutturato",
+    "data_richiesta": "2025-06-17",
+    "operatore": 1,
+    "fase_processo": "da_mettere_online",
+    "seo_stato": "analisi",
+    "scadenza": "2025-09-30",
+    "note": "Restyling",
+    "created_at": "2025-10-02T14:50:36.092Z",
+    "updated_at": "2025-10-02T14:53:38.396Z"
+  }
+},
+{
+  "model": "clients.client",
+  "pk": 47,
+  "fields": {
+    "nome_attivita": "Yoromi",
+    "account_riferimento": "Rubinato",
+    "tipologia_cliente": "B",
+    "servizio": "app_webapp",
+    "data_richiesta": "2025-07-14",
+    "operatore": 3,
+    "fase_processo": "in_revisione",
+    "seo_stato": "",
+    "scadenza": "2025-09-30",
+    "note": "",
+    "created_at": "2025-10-02T14:50:36.093Z",
+    "updated_at": "2025-10-02T14:53:38.397Z"
+  }
+},
+{
+  "model": "clients.client",
+  "pk": 48,
+  "fields": {
+    "nome_attivita": "Vela Azzurra",
+    "account_riferimento": "Rubinato",
+    "tipologia_cliente": "AAA",
+    "servizio": "sito_strutturato",
+    "data_richiesta": "2025-04-14",
+    "operatore": 3,
+    "fase_processo": "presentazione",
+    "seo_stato": "analisi",
+    "scadenza": "2025-10-20",
+    "note": "",
+    "created_at": "2025-10-02T14:50:36.093Z",
+    "updated_at": "2025-10-02T14:53:38.404Z"
+  }
+},
+{
+  "model": "clients.client",
+  "pk": 49,
+  "fields": {
+    "nome_attivita": "SAPG Compliance",
+    "account_riferimento": "Recchimuzzi",
+    "tipologia_cliente": "A",
+    "servizio": "landing_page",
+    "data_richiesta": "2025-05-29",
+    "operatore": 3,
+    "fase_processo": "in_revisione",
+    "seo_stato": "analisi",
+    "scadenza": "2025-09-30",
+    "note": "",
+    "created_at": "2025-10-02T14:50:36.094Z",
+    "updated_at": "2025-10-02T14:53:38.397Z"
+  }
+},
+{
+  "model": "clients.client",
+  "pk": 50,
+  "fields": {
+    "nome_attivita": "Sotto la polvere",
+    "account_riferimento": "Rubinato",
+    "tipologia_cliente": "B",
+    "servizio": "sito_strutturato",
+    "data_richiesta": "2025-06-13",
+    "operatore": 3,
+    "fase_processo": "presentazione",
+    "seo_stato": "analisi",
+    "scadenza": "2025-09-30",
+    "note": "Shopify",
+    "created_at": "2025-10-02T14:50:36.095Z",
+    "updated_at": "2025-10-02T14:53:38.397Z"
+  }
+},
+{
+  "model": "clients.client",
+  "pk": 51,
+  "fields": {
+    "nome_attivita": "Nuova Corrente",
+    "account_riferimento": "Carnelli",
+    "tipologia_cliente": "AAA",
+    "servizio": "app_webapp",
+    "data_richiesta": "2025-04-14",
+    "operatore": 3,
+    "fase_processo": "implementazione",
+    "seo_stato": "",
+    "scadenza": "2025-12-23",
+    "note": "",
+    "created_at": "2025-10-02T14:50:36.095Z",
+    "updated_at": "2025-10-02T14:53:38.406Z"
+  }
+},
+{
+  "model": "clients.client",
+  "pk": 52,
+  "fields": {
+    "nome_attivita": "Imeta srl",
+    "account_riferimento": "Rubinato",
+    "tipologia_cliente": "AAA",
+    "servizio": "sito_vetrina",
+    "data_richiesta": "2025-09-05",
+    "operatore": 3,
+    "fase_processo": "prima_call",
+    "seo_stato": "analisi",
+    "scadenza": "2025-10-31",
+    "note": "Restyling",
+    "created_at": "2025-10-02T14:50:36.096Z",
+    "updated_at": "2025-10-02T14:53:38.405Z"
+  }
+},
+{
+  "model": "clients.client",
+  "pk": 53,
+  "fields": {
+    "nome_attivita": "3VI",
+    "account_riferimento": "Molinari",
+    "tipologia_cliente": "A",
+    "servizio": "landing_page",
+    "data_richiesta": "2025-09-16",
+    "operatore": 3,
+    "fase_processo": "implementazione",
+    "seo_stato": "analisi",
+    "scadenza": "2025-10-31",
+    "note": "Fil con Cursor",
+    "created_at": "2025-10-02T14:50:36.096Z",
+    "updated_at": "2025-10-02T14:53:38.404Z"
+  }
+},
+{
+  "model": "clients.client",
+  "pk": 54,
+  "fields": {
+    "nome_attivita": "Vendruscolo",
+    "account_riferimento": "Del Foro",
+    "tipologia_cliente": "B",
+    "servizio": "landing_page",
+    "data_richiesta": "2025-09-19",
+    "operatore": 3,
+    "fase_processo": "implementazione",
+    "seo_stato": "analisi",
+    "scadenza": "2025-10-31",
+    "note": "Gianlu con Cursor",
+    "created_at": "2025-10-02T14:50:36.097Z",
+    "updated_at": "2025-10-02T14:53:38.405Z"
+  }
+},
+{
+  "model": "clients.client",
+  "pk": 55,
+  "fields": {
+    "nome_attivita": "Core mio",
+    "account_riferimento": "Clerici",
+    "tipologia_cliente": "AAA",
+    "servizio": "sito_strutturato",
+    "data_richiesta": "2025-05-16",
+    "operatore": 2,
+    "fase_processo": "presentazione",
+    "seo_stato": "analisi",
+    "scadenza": "2025-10-15",
+    "note": "",
+    "created_at": "2025-10-02T14:50:36.097Z",
+    "updated_at": "2025-10-02T14:53:38.403Z"
+  }
+},
+{
+  "model": "clients.client",
+  "pk": 56,
+  "fields": {
+    "nome_attivita": "Rehabita",
+    "account_riferimento": "Recchimuzzi",
+    "tipologia_cliente": "B",
+    "servizio": "landing_page",
+    "data_richiesta": "2025-08-06",
+    "operatore": 2,
+    "fase_processo": "in_revisione",
+    "seo_stato": "",
+    "scadenza": "2025-10-07",
+    "note": "",
+    "created_at": "2025-10-02T14:50:36.098Z",
+    "updated_at": "2025-10-02T14:53:38.400Z"
+  }
+},
+{
+  "model": "clients.client",
+  "pk": 57,
+  "fields": {
+    "nome_attivita": "Rehabita",
+    "account_riferimento": "Recchimuzzi",
+    "tipologia_cliente": "B",
+    "servizio": "sito_strutturato",
+    "data_richiesta": "2025-08-06",
+    "operatore": 2,
+    "fase_processo": "presentazione",
+    "seo_stato": "analisi",
+    "scadenza": "2025-10-07",
+    "note": "",
+    "created_at": "2025-10-02T14:50:36.098Z",
+    "updated_at": "2025-10-02T14:53:38.400Z"
+  }
+},
+{
+  "model": "clients.client",
+  "pk": 58,
+  "fields": {
+    "nome_attivita": "Calistea",
+    "account_riferimento": "Rubinato",
+    "tipologia_cliente": "AAA",
+    "servizio": "ecommerce",
+    "data_richiesta": "2025-05-09",
+    "operatore": 2,
+    "fase_processo": "implementazione",
+    "seo_stato": "analisi",
+    "scadenza": "2025-10-10",
+    "note": "",
+    "created_at": "2025-10-02T14:50:36.099Z",
+    "updated_at": "2025-10-02T14:53:38.401Z"
+  }
+},
+{
+  "model": "clients.client",
+  "pk": 59,
+  "fields": {
+    "nome_attivita": "TWA consulting",
+    "account_riferimento": "Sciascia",
+    "tipologia_cliente": "B",
+    "servizio": "sito_vetrina",
+    "data_richiesta": "2025-06-12",
+    "operatore": 2,
+    "fase_processo": "implementazione",
+    "seo_stato": "analisi",
+    "scadenza": "2025-10-10",
+    "note": "",
+    "created_at": "2025-10-02T14:50:36.100Z",
+    "updated_at": "2025-10-02T14:53:38.402Z"
+  }
+},
+{
+  "model": "clients.client",
+  "pk": 60,
+  "fields": {
+    "nome_attivita": "Lucchetti Marmi",
+    "account_riferimento": "Colombo F.",
+    "tipologia_cliente": "AAA",
+    "servizio": "sito_strutturato",
+    "data_richiesta": "2025-02-17",
+    "operatore": 2,
+    "fase_processo": "in_revisione",
+    "seo_stato": "analisi",
+    "scadenza": "2025-10-07",
+    "note": "",
+    "created_at": "2025-10-02T14:50:36.101Z",
+    "updated_at": "2025-10-02T14:53:38.399Z"
+  }
+},
+{
+  "model": "clients.client",
+  "pk": 61,
+  "fields": {
+    "nome_attivita": "Fiscal Focus",
+    "account_riferimento": "Longoni",
+    "tipologia_cliente": "AAA",
+    "servizio": "landing_page",
+    "data_richiesta": "2025-07-18",
+    "operatore": 2,
+    "fase_processo": "presentazione",
+    "seo_stato": "",
+    "scadenza": "2025-10-02",
+    "note": "",
+    "created_at": "2025-10-02T14:50:36.102Z",
+    "updated_at": "2025-10-02T14:53:38.398Z"
+  }
+},
+{
+  "model": "clients.client",
+  "pk": 62,
+  "fields": {
+    "nome_attivita": "Acqua Doctor snc",
+    "account_riferimento": "Del Foro",
+    "tipologia_cliente": "AAA",
+    "servizio": "landing_page",
+    "data_richiesta": "2025-09-09",
+    "operatore": 2,
+    "fase_processo": "prima_call",
+    "seo_stato": "",
+    "scadenza": "2025-10-12",
+    "note": "",
+    "created_at": "2025-10-02T14:50:36.103Z",
+    "updated_at": "2025-10-02T14:53:38.402Z"
+  }
+},
+{
+  "model": "clients.client",
+  "pk": 63,
+  "fields": {
+    "nome_attivita": "Acqua Doctor snc",
+    "account_riferimento": "Del Foro",
+    "tipologia_cliente": "AAA",
+    "servizio": "sito_strutturato",
+    "data_richiesta": "2025-09-10",
+    "operatore": 2,
+    "fase_processo": "prima_call",
+    "seo_stato": "",
+    "scadenza": "2025-10-12",
+    "note": "",
+    "created_at": "2025-10-02T14:50:36.103Z",
+    "updated_at": "2025-10-02T14:53:38.403Z"
+  }
+},
+{
+  "model": "clients.client",
+  "pk": 64,
+  "fields": {
+    "nome_attivita": "Centro Risarcimento Salute",
+    "account_riferimento": "Carnelli",
+    "tipologia_cliente": "B",
+    "servizio": "sito_vetrina",
+    "data_richiesta": "2025-09-23",
+    "operatore": 2,
+    "fase_processo": "presentazione",
+    "seo_stato": "",
+    "scadenza": "2025-10-10",
+    "note": "Sito fatto con AI (la home Micol il resto Marta)",
+    "created_at": "2025-10-02T14:50:36.104Z",
+    "updated_at": "2025-10-02T14:53:38.401Z"
+  }
+},
+{
+  "model": "clients.client",
+  "pk": 65,
+  "fields": {
+    "nome_attivita": "Tr compositi",
+    "account_riferimento": "Gagianesi",
+    "tipologia_cliente": "A",
+    "servizio": "sito_strutturato",
+    "data_richiesta": "2025-10-16",
+    "operatore": 2,
+    "fase_processo": "in_revisione",
+    "seo_stato": "analisi",
+    "scadenza": "2025-10-03",
+    "note": "",
+    "created_at": "2025-10-02T14:50:36.104Z",
+    "updated_at": "2025-10-02T15:44:51.967Z"
+  }
+},
+{
+  "model": "clients.client",
+  "pk": 66,
+  "fields": {
+    "nome_attivita": "Trattoria Morè",
+    "account_riferimento": "Colombo F.",
+    "tipologia_cliente": "A",
+    "servizio": "gestione",
+    "data_richiesta": "2025-10-02",
+    "operatore": 2,
+    "fase_processo": "gestione",
+    "seo_stato": "",
+    "scadenza": null,
+    "note": "",
+    "created_at": "2025-10-02T14:50:36.105Z",
+    "updated_at": "2025-10-02T15:43:48.782Z"
+  }
+},
+{
+  "model": "clients.client",
+  "pk": 67,
+  "fields": {
+    "nome_attivita": "Estetica Le Muse",
+    "account_riferimento": "Ferrian",
+    "tipologia_cliente": "AAA",
+    "servizio": "gestione",
+    "data_richiesta": "2025-10-02",
+    "operatore": 2,
+    "fase_processo": "gestione",
+    "seo_stato": "",
+    "scadenza": null,
+    "note": "",
+    "created_at": "2025-10-02T14:50:36.106Z",
+    "updated_at": "2025-10-02T15:43:41.716Z"
+  }
+},
+{
+  "model": "clients.client",
+  "pk": 68,
+  "fields": {
+    "nome_attivita": "Yoko",
+    "account_riferimento": "Sciascia",
+    "tipologia_cliente": "AAA",
+    "servizio": "gestione",
+    "data_richiesta": "2025-10-02",
+    "operatore": 2,
+    "fase_processo": "gestione",
+    "seo_stato": "",
+    "scadenza": null,
+    "note": "",
+    "created_at": "2025-10-02T14:50:36.106Z",
+    "updated_at": "2025-10-02T15:43:54.147Z"
+  }
+},
+{
+  "model": "clients.client",
+  "pk": 69,
+  "fields": {
+    "nome_attivita": "Bmed",
+    "account_riferimento": "Baratta",
+    "tipologia_cliente": "A",
+    "servizio": "gestione",
+    "data_richiesta": "2025-10-02",
+    "operatore": 2,
+    "fase_processo": "gestione",
+    "seo_stato": "",
+    "scadenza": null,
+    "note": "",
+    "created_at": "2025-10-02T14:50:36.107Z",
+    "updated_at": "2025-10-02T15:43:37.265Z"
+  }
+},
+{
+  "model": "clients.client",
+  "pk": 70,
+  "fields": {
+    "nome_attivita": "Forensia",
+    "account_riferimento": "Federica C.",
+    "tipologia_cliente": "AAA",
+    "servizio": "sito_strutturato",
+    "data_richiesta": "2025-09-23",
+    "operatore": 2,
+    "fase_processo": "prima_call",
+    "seo_stato": "",
+    "scadenza": "2025-10-16",
+    "note": "Progetto grafico",
+    "created_at": "2025-10-02T14:50:36.107Z",
+    "updated_at": "2025-10-02T14:53:38.403Z"
+  }
+},
+{
+  "model": "clients.client",
+  "pk": 71,
+  "fields": {
+    "nome_attivita": "BZ consulting",
+    "account_riferimento": "Federica C.",
+    "tipologia_cliente": "AAA",
+    "servizio": "landing_page",
+    "data_richiesta": "2025-10-02",
+    "operatore": 2,
+    "fase_processo": "in_revisione",
+    "seo_stato": "",
+    "scadenza": null,
+    "note": "",
+    "created_at": "2025-10-02T14:50:36.108Z",
+    "updated_at": "2025-10-02T14:50:36.108Z"
+  }
+},
+{
+  "model": "clients.client",
+  "pk": 73,
+  "fields": {
+    "nome_attivita": "Moby Dick",
+    "account_riferimento": "Ramini",
+    "tipologia_cliente": "A",
+    "servizio": "gestione",
+    "data_richiesta": "2026-07-20",
+    "operatore": 1,
+    "fase_processo": "gestione",
+    "seo_stato": "",
+    "scadenza": null,
+    "note": "Gestione e-commerce",
+    "created_at": "2025-10-02T15:48:29.489Z",
+    "updated_at": "2025-10-02T15:50:32.045Z"
+  }
+}
+]

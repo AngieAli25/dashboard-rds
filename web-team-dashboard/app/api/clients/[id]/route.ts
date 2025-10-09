@@ -12,7 +12,11 @@ export async function GET(
     const client = await prisma.client.findUnique({
       where: { id },
       include: {
-        operatore: true,
+        operators: {
+          include: {
+            teamMember: true,
+          },
+        },
       },
     });
 
@@ -30,14 +34,24 @@ export async function GET(
       tipologia_cliente: client.tipologiaCliente,
       servizio: client.servizio,
       data_richiesta: client.dataRichiesta?.toISOString().split('T')[0] || '',
-      operatore: client.operatoreId,
-      operatore_detail: client.operatore ? {
-        id: client.operatore.id,
-        name: client.operatore.name,
-        role: client.operatore.role,
-        active: client.operatore.active,
-        created_at: client.operatore.createdAt.toISOString(),
-        updated_at: client.operatore.updatedAt.toISOString(),
+      operatori: client.operators.map(op => op.teamMember.id),
+      operatori_details: client.operators.map(op => ({
+        id: op.teamMember.id,
+        name: op.teamMember.name,
+        role: op.teamMember.role,
+        active: op.teamMember.active,
+        created_at: op.teamMember.createdAt.toISOString(),
+        updated_at: op.teamMember.updatedAt.toISOString(),
+      })),
+      // Keep backward compatibility
+      operatore: client.operators[0]?.teamMember.id || null,
+      operatore_detail: client.operators[0] ? {
+        id: client.operators[0].teamMember.id,
+        name: client.operators[0].teamMember.name,
+        role: client.operators[0].teamMember.role,
+        active: client.operators[0].teamMember.active,
+        created_at: client.operators[0].teamMember.createdAt.toISOString(),
+        updated_at: client.operators[0].teamMember.updatedAt.toISOString(),
       } : undefined,
       fase_processo: client.faseProcesso,
       seo_stato: client.seoStato,
@@ -77,17 +91,39 @@ export async function PATCH(
     if (body.tipologia_cliente !== undefined) updateData.tipologiaCliente = body.tipologia_cliente;
     if (body.servizio !== undefined) updateData.servizio = body.servizio;
     if (body.data_richiesta !== undefined) updateData.dataRichiesta = body.data_richiesta ? new Date(body.data_richiesta) : null;
-    if (body.operatore !== undefined) updateData.operatoreId = body.operatore ? parseInt(body.operatore) : null;
     if (body.fase_processo !== undefined) updateData.faseProcesso = body.fase_processo;
     if (body.seo_stato !== undefined) updateData.seoStato = body.seo_stato;
     if (body.scadenza !== undefined) updateData.scadenza = body.scadenza ? new Date(body.scadenza) : null;
     if (body.note !== undefined) updateData.note = body.note;
 
+    // Handle operators update
+    if (body.operatori !== undefined || body.operatore !== undefined) {
+      const operatoriIds = body.operatori || (body.operatore ? [parseInt(body.operatore)] : []);
+
+      // Delete existing operators and create new ones
+      await prisma.clientOperator.deleteMany({
+        where: { clientId: id },
+      });
+
+      if (operatoriIds.length > 0) {
+        await prisma.clientOperator.createMany({
+          data: operatoriIds.map((teamMemberId: number) => ({
+            clientId: id,
+            teamMemberId,
+          })),
+        });
+      }
+    }
+
     const client = await prisma.client.update({
       where: { id },
       data: updateData,
       include: {
-        operatore: true,
+        operators: {
+          include: {
+            teamMember: true,
+          },
+        },
       },
     });
 
@@ -98,14 +134,24 @@ export async function PATCH(
       tipologia_cliente: client.tipologiaCliente,
       servizio: client.servizio,
       data_richiesta: client.dataRichiesta?.toISOString().split('T')[0] || '',
-      operatore: client.operatoreId,
-      operatore_detail: client.operatore ? {
-        id: client.operatore.id,
-        name: client.operatore.name,
-        role: client.operatore.role,
-        active: client.operatore.active,
-        created_at: client.operatore.createdAt.toISOString(),
-        updated_at: client.operatore.updatedAt.toISOString(),
+      operatori: client.operators.map(op => op.teamMember.id),
+      operatori_details: client.operators.map(op => ({
+        id: op.teamMember.id,
+        name: op.teamMember.name,
+        role: op.teamMember.role,
+        active: op.teamMember.active,
+        created_at: op.teamMember.createdAt.toISOString(),
+        updated_at: op.teamMember.updatedAt.toISOString(),
+      })),
+      // Keep backward compatibility
+      operatore: client.operators[0]?.teamMember.id || null,
+      operatore_detail: client.operators[0] ? {
+        id: client.operators[0].teamMember.id,
+        name: client.operators[0].teamMember.name,
+        role: client.operators[0].teamMember.role,
+        active: client.operators[0].teamMember.active,
+        created_at: client.operators[0].teamMember.createdAt.toISOString(),
+        updated_at: client.operators[0].teamMember.updatedAt.toISOString(),
       } : undefined,
       fase_processo: client.faseProcesso,
       seo_stato: client.seoStato,

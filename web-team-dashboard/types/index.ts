@@ -15,8 +15,12 @@ export interface Client {
   servizio: 'sito_vetrina' | 'sito_strutturato' | 'ecommerce' | 'landing_page' | 'app_webapp' | 'blog' | 'mantenimento' | 'gestione';
   servizio_display: string;
   data_richiesta: string;
+  // Legacy fields for backward compatibility
   operatore: number | null;
   operatore_detail?: TeamMember;
+  // New fields for multiple operators
+  operatori?: number[];
+  operatori_details?: TeamMember[];
   fase_processo: string;
   fase_processo_display: string;
   seo_stato: string;

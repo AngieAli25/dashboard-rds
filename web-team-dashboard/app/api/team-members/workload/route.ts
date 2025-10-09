@@ -9,20 +9,25 @@ export async function GET() {
       },
       include: {
         clients: {
-          where: {
-            faseProcesso: {
-              in: ['prima_call', 'implementazione', 'in_revisione', 'presentazione', 'da_mettere_online', 'gestione'],
-            },
+          include: {
+            client: true,
           },
         },
       },
     });
 
     const workloadData = teamMembers.map((member) => {
+      // Filter active clients
+      const activeClients = member.clients
+        .map(co => co.client)
+        .filter(client =>
+          ['prima_call', 'implementazione', 'in_revisione', 'presentazione', 'da_mettere_online', 'gestione'].includes(client.faseProcesso)
+        );
+
       // Group clients by service type
       const clientTypes: Record<string, any[]> = {};
 
-      member.clients.forEach((client) => {
+      activeClients.forEach((client) => {
         const serviceType = client.servizio;
         if (!clientTypes[serviceType]) {
           clientTypes[serviceType] = [];
@@ -38,8 +43,8 @@ export async function GET() {
         id: member.id,
         name: member.name,
         role: member.role,
-        total_clients: member.clients.length,
-        active_clients: member.clients.length,
+        total_clients: activeClients.length,
+        active_clients: activeClients.length,
         client_types: clientTypes,
       };
     });

@@ -118,8 +118,8 @@ export default function ClientiPage() {
         client.nome_attivita.toLowerCase().includes(filters.search.toLowerCase()) ||
         client.account_riferimento.toLowerCase().includes(filters.search.toLowerCase());
       
-      const matchesOperatore = !filters.operatore || 
-        client.operatore?.toString() === filters.operatore;
+      const matchesOperatore = !filters.operatore ||
+        (client.operatori && client.operatori.includes(parseInt(filters.operatore)));
       
       const matchesServizio = !filters.servizio || 
         client.servizio === filters.servizio;
@@ -297,14 +297,21 @@ export default function ClientiPage() {
                       onSave={(value) => handleFieldUpdate(client.id, 'tipologia_cliente', value)}
                     />
                   </td>
-                  <td className="px-4 py-4 whitespace-nowrap">
-                    <EditableCell
-                      value={client.operatore?.toString() || ''}
-                      type="select"
-                      options={teamOptions}
-                      onSave={(value) => handleFieldUpdate(client.id, 'operatore', value)}
-                      displayValue={client.operatore_detail?.name || 'Non assegnato'}
-                    />
+                  <td className="px-4 py-4">
+                    <div className="flex flex-wrap gap-1">
+                      {client.operatori_details && client.operatori_details.length > 0 ? (
+                        client.operatori_details.map((op: any) => (
+                          <span
+                            key={op.id}
+                            className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800"
+                          >
+                            {op.name}
+                          </span>
+                        ))
+                      ) : (
+                        <span className="text-sm text-gray-400">Non assegnato</span>
+                      )}
+                    </div>
                   </td>
                   <td className="px-4 py-4 whitespace-nowrap">
                     <EditableCell

@@ -22,7 +22,11 @@ export async function GET(request: NextRequest) {
     }
 
     if (operatore) {
-      where.operatoreId = parseInt(operatore);
+      where.operators = {
+        some: {
+          teamMemberId: parseInt(operatore),
+        },
+      };
     }
 
     if (servizio) {
@@ -64,7 +68,11 @@ export async function GET(request: NextRequest) {
     const clients = await prisma.client.findMany({
       where,
       include: {
-        operatore: true,
+        operators: {
+          include: {
+            teamMember: true,
+          },
+        },
       },
       orderBy: [
         { dataRichiesta: 'desc' },
@@ -81,14 +89,24 @@ export async function GET(request: NextRequest) {
       servizio: client.servizio,
       servizio_display: getServizioDisplay(client.servizio),
       data_richiesta: client.dataRichiesta?.toISOString().split('T')[0] || '',
-      operatore: client.operatoreId,
-      operatore_detail: client.operatore ? {
-        id: client.operatore.id,
-        name: client.operatore.name,
-        role: client.operatore.role as 'developer' | 'seo',
-        active: client.operatore.active,
-        created_at: client.operatore.createdAt.toISOString(),
-        updated_at: client.operatore.updatedAt.toISOString(),
+      operatori: client.operators.map(op => op.teamMember.id),
+      operatori_details: client.operators.map(op => ({
+        id: op.teamMember.id,
+        name: op.teamMember.name,
+        role: op.teamMember.role as 'developer' | 'seo',
+        active: op.teamMember.active,
+        created_at: op.teamMember.createdAt.toISOString(),
+        updated_at: op.teamMember.updatedAt.toISOString(),
+      })),
+      // Keep backward compatibility
+      operatore: client.operators[0]?.teamMember.id || null,
+      operatore_detail: client.operators[0] ? {
+        id: client.operators[0].teamMember.id,
+        name: client.operators[0].teamMember.name,
+        role: client.operators[0].teamMember.role as 'developer' | 'seo',
+        active: client.operators[0].teamMember.active,
+        created_at: client.operators[0].teamMember.createdAt.toISOString(),
+        updated_at: client.operators[0].teamMember.updatedAt.toISOString(),
       } : undefined,
       fase_processo: client.faseProcesso,
       fase_processo_display: getFaseProcessoDisplay(client.faseProcesso),
@@ -122,6 +140,9 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
 
+    // Support both single operatore and multiple operatori
+    const operatoriIds = body.operatori || (body.operatore ? [parseInt(body.operatore)] : []);
+
     const client = await prisma.client.create({
       data: {
         nomeAttivita: body.nome_attivita,
@@ -129,14 +150,22 @@ export async function POST(request: NextRequest) {
         tipologiaCliente: body.tipologia_cliente,
         servizio: body.servizio,
         dataRichiesta: body.data_richiesta ? new Date(body.data_richiesta) : new Date(),
-        operatoreId: body.operatore ? parseInt(body.operatore) : null,
         faseProcesso: body.fase_processo || '',
         seoStato: body.seo_stato || '',
         scadenza: body.scadenza ? new Date(body.scadenza) : null,
         note: body.note || '',
+        operators: {
+          create: operatoriIds.map((id: number) => ({
+            teamMemberId: id,
+          })),
+        },
       },
       include: {
-        operatore: true,
+        operators: {
+          include: {
+            teamMember: true,
+          },
+        },
       },
     });
 
@@ -149,14 +178,24 @@ export async function POST(request: NextRequest) {
       servizio: client.servizio,
       servizio_display: getServizioDisplay(client.servizio),
       data_richiesta: client.dataRichiesta?.toISOString().split('T')[0] || '',
-      operatore: client.operatoreId,
-      operatore_detail: client.operatore ? {
-        id: client.operatore.id,
-        name: client.operatore.name,
-        role: client.operatore.role as 'developer' | 'seo',
-        active: client.operatore.active,
-        created_at: client.operatore.createdAt.toISOString(),
-        updated_at: client.operatore.updatedAt.toISOString(),
+      operatori: client.operators.map(op => op.teamMember.id),
+      operatori_details: client.operators.map(op => ({
+        id: op.teamMember.id,
+        name: op.teamMember.name,
+        role: op.teamMember.role as 'developer' | 'seo',
+        active: op.teamMember.active,
+        created_at: op.teamMember.createdAt.toISOString(),
+        updated_at: op.teamMember.updatedAt.toISOString(),
+      })),
+      // Keep backward compatibility
+      operatore: client.operators[0]?.teamMember.id || null,
+      operatore_detail: client.operators[0] ? {
+        id: client.operators[0].teamMember.id,
+        name: client.operators[0].teamMember.name,
+        role: client.operators[0].teamMember.role as 'developer' | 'seo',
+        active: client.operators[0].teamMember.active,
+        created_at: client.operators[0].teamMember.createdAt.toISOString(),
+        updated_at: client.operators[0].teamMember.updatedAt.toISOString(),
       } : undefined,
       fase_processo: client.faseProcesso,
       fase_processo_display: getFaseProcessoDisplay(client.faseProcesso),
