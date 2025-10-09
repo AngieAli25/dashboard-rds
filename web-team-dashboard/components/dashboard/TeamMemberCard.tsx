@@ -25,6 +25,18 @@ export function TeamMemberCard({ member }: TeamMemberCardProps) {
     return colors[index];
   };
 
+  // Service type labels
+  const serviceLabels: Record<string, string> = {
+    'sito_vetrina': 'Sito Vetrina',
+    'sito_strutturato': 'Sito Strutturato',
+    'ecommerce': 'E-commerce',
+    'landing_page': 'Landing Page',
+    'app_webapp': 'App/WebApp',
+    'blog': 'Blog',
+    'mantenimento': 'Mantenimento',
+    'gestione': 'Gestione',
+  };
+
   // Role badge colors
   const roleColors = {
     'developer': 'bg-teal-100 text-teal-800',
@@ -73,7 +85,9 @@ export function TeamMemberCard({ member }: TeamMemberCardProps) {
                 .map(([serviceType, clients]) => (
                 <div key={serviceType} className="space-y-1">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm font-semibold text-gray-800">{serviceType}</span>
+                    <span className="text-sm font-semibold text-gray-800">
+                      {serviceLabels[serviceType] || serviceType}
+                    </span>
                     <span className="text-xs font-medium text-gray-900">{clients.length}</span>
                   </div>
                   <div className="space-y-1">
