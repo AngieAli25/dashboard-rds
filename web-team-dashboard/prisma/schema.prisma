@@ -1,0 +1,80 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("POSTGRES_PRISMA_URL") // uses connection pooling
+  directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
+}
+
+model TeamMember {
+  id        Int      @id @default(autoincrement())
+  name      String   @db.VarChar(100)
+  role      String   @db.VarChar(20) // 'developer' or 'seo'
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  clients        Client[]         @relation("OperatoreClients")
+  projectHistory ProjectHistory[]
+
+  @@map("team_members")
+}
+
+model Client {
+  id                   Int       @id @default(autoincrement())
+  nomeAttivita         String    @map("nome_attivita") @db.VarChar(200)
+  accountRiferimento   String    @default("") @map("account_riferimento") @db.VarChar(200)
+  tipologiaCliente     String    @map("tipologia_cliente") @db.VarChar(3) // 'AAA', 'A', 'B'
+  servizio             String    @db.VarChar(50) // 'sito_vetrina', 'sito_strutturato', etc.
+  dataRichiesta        DateTime? @map("data_richiesta") @db.Date
+  operatoreId          Int?      @map("operatore_id")
+  faseProcesso         String    @default("") @map("fase_processo") @db.VarChar(50)
+  seoStato             String    @default("") @map("seo_stato") @db.VarChar(50)
+  scadenza             DateTime? @db.Date
+  note                 String    @default("") @db.Text
+  createdAt            DateTime  @default(now()) @map("created_at")
+  updatedAt            DateTime  @updatedAt @map("updated_at")
+
+  // Relations
+  operatore      TeamMember?      @relation("OperatoreClients", fields: [operatoreId], references: [id], onDelete: SetNull)
+  projectHistory ProjectHistory[]
+
+  @@map("clients")
+}
+
+model ProjectHistory {
+  id                 Int       @id @default(autoincrement())
+  clientId           Int       @map("client_id")
+  operatorId         Int?      @map("operator_id")
+  dataInizio         DateTime  @map("data_inizio") @db.Date
+  dataCompletamento  DateTime? @map("data_completamento") @db.Date
+  servizio           String    @db.VarChar(50)
+  note               String    @default("") @db.Text
+  createdAt          DateTime  @default(now()) @map("created_at")
+
+  // Relations
+  client   Client      @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  operator TeamMember? @relation(fields: [operatorId], references: [id], onDelete: SetNull)
+
+  @@map("project_history")
+}
+
+model MonthlySnapshot {
+  id                   Int      @id @default(autoincrement())
+  mese                 Int
+  anno                 Int
+  clientiAttivi        Int      @default(0) @map("clienti_attivi")
+  clientiStandby       Int      @default(0) @map("clienti_standby")
+  clientiMantenimento  Int      @default(0) @map("clienti_mantenimento")
+  dataJson             Json     @default("{}") @map("data_json")
+  createdAt            DateTime @default(now()) @map("created_at")
+
+  @@unique([mese, anno])
+  @@map("monthly_snapshots")
+}
