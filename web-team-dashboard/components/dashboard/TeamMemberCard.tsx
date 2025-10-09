@@ -9,21 +9,21 @@ interface TeamMemberCardProps {
 }
 
 export function TeamMemberCard({ member }: TeamMemberCardProps) {
-  // Avatar colors - pastel colors, each member gets a unique color
-  const getAvatarColor = (memberId: number) => {
-    const pastelColors = [
-      'bg-pink-300',      // Pastel pink
-      'bg-blue-300',      // Pastel blue
-      'bg-purple-300',    // Pastel purple
-      'bg-green-300',     // Pastel green
-      'bg-yellow-300',    // Pastel yellow
-      'bg-orange-300',    // Pastel orange
-      'bg-teal-300',      // Pastel teal
-      'bg-indigo-300',    // Pastel indigo
+  // Avatar colors - same style as KPI icons
+  const getAvatarStyles = (memberId: number) => {
+    const avatarStyles = [
+      { bg: 'bg-blue-50', text: 'text-blue-600' },
+      { bg: 'bg-purple-50', text: 'text-purple-600' },
+      { bg: 'bg-green-50', text: 'text-green-600' },
+      { bg: 'bg-orange-50', text: 'text-orange-600' },
+      { bg: 'bg-pink-50', text: 'text-pink-600' },
+      { bg: 'bg-indigo-50', text: 'text-indigo-600' },
+      { bg: 'bg-teal-50', text: 'text-teal-600' },
+      { bg: 'bg-yellow-50', text: 'text-yellow-600' },
     ];
     // Use member ID to ensure consistent color per member
-    const index = (memberId - 1) % pastelColors.length;
-    return pastelColors[index];
+    const index = (memberId - 1) % avatarStyles.length;
+    return avatarStyles[index];
   };
 
   // Service type labels
@@ -45,14 +45,14 @@ export function TeamMemberCard({ member }: TeamMemberCardProps) {
   };
 
   const roleColor = roleColors[member.role as keyof typeof roleColors] || 'bg-gray-100 text-gray-800';
-  const avatarColor = getAvatarColor(member.id);
+  const avatarStyles = getAvatarStyles(member.id);
   const initial = member.name.charAt(0).toUpperCase();
 
   return (
     <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm hover:shadow-md transition-shadow">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center">
-          <div className={cn('rounded-full w-10 h-10 flex items-center justify-center mr-3 text-gray-800 font-bold text-lg', avatarColor)}>
+          <div className={cn('rounded-lg w-10 h-10 flex items-center justify-center mr-3 font-semibold text-lg', avatarStyles.bg, avatarStyles.text)}>
             {initial}
           </div>
           <div>
