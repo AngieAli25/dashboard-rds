@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { BarChart3, Users, Clock, X } from 'lucide-react';
+import { BarChart3, Users, Clock, Database, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface SidebarProps {
@@ -12,11 +12,12 @@ interface SidebarProps {
 
 export function Sidebar({ isOpen, onClose }: SidebarProps) {
   const pathname = usePathname();
-  
+
   const navigation = [
     { name: 'Dashboard', href: '/', icon: BarChart3 },
     { name: 'Clienti', href: '/clienti', icon: Users },
     { name: 'Storico', href: '/storico', icon: Clock },
+    { name: 'Database', href: 'http://localhost:5555', icon: Database, external: true },
   ];
 
   return (
@@ -52,22 +53,36 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
             {navigation.map((item) => {
               const Icon = item.icon;
               const isActive = pathname === item.href;
-              
+              const linkClassName = cn(
+                'group flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors',
+                isActive
+                  ? 'bg-primary-50 text-primary-600 border-r-2 border-primary-600'
+                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+              );
+
               return (
                 <li key={item.name}>
-                  <Link
-                    href={item.href}
-                    onClick={onClose}
-                    className={cn(
-                      'group flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors',
-                      isActive
-                        ? 'bg-primary-50 text-primary-600 border-r-2 border-primary-600'
-                        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
-                    )}
-                  >
-                    <Icon className="h-5 w-5 mr-2" />
-                    {item.name}
-                  </Link>
+                  {item.external ? (
+                    <a
+                      href={item.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={onClose}
+                      className={linkClassName}
+                    >
+                      <Icon className="h-5 w-5 mr-2" />
+                      {item.name}
+                    </a>
+                  ) : (
+                    <Link
+                      href={item.href}
+                      onClick={onClose}
+                      className={linkClassName}
+                    >
+                      <Icon className="h-5 w-5 mr-2" />
+                      {item.name}
+                    </Link>
+                  )}
                 </li>
               );
             })}
