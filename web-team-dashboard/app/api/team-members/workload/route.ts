@@ -11,7 +11,7 @@ export async function GET() {
         clients: {
           where: {
             faseProcesso: {
-              in: ['prima_call', 'implementazione', 'presentazione', 'da_mettere_online', 'gestione'],
+              in: ['prima_call', 'implementazione', 'in_revisione', 'presentazione', 'da_mettere_online', 'gestione'],
             },
           },
         },
@@ -19,22 +19,19 @@ export async function GET() {
     });
 
     const workloadData = teamMembers.map((member) => {
-      // Group clients by type
-      const clientTypes: Record<string, any[]> = {
-        AAA: [],
-        A: [],
-        B: [],
-      };
+      // Group clients by service type
+      const clientTypes: Record<string, any[]> = {};
 
       member.clients.forEach((client) => {
-        const type = client.tipologiaCliente;
-        if (clientTypes[type]) {
-          clientTypes[type].push({
-            nome: client.nomeAttivita,
-            fase: client.faseProcesso,
-            scadenza: client.scadenza?.toISOString().split('T')[0] || null,
-          });
+        const serviceType = client.servizio;
+        if (!clientTypes[serviceType]) {
+          clientTypes[serviceType] = [];
         }
+        clientTypes[serviceType].push({
+          nome: client.nomeAttivita,
+          fase: client.faseProcesso,
+          scadenza: client.scadenza?.toISOString().split('T')[0] || null,
+        });
       });
 
       return {
